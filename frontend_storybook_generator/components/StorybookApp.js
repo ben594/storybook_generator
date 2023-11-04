@@ -5,7 +5,7 @@ import StoryIcon from './StoryIcon'; // Assuming StoryIcon.js is in the same fol
 import NavBar from './NavBar'; // Assuming NavBar.js is in the same folder
 import CircularButton from './CircularButton';
 
-const StorybookApp = () => {
+const StorybookApp = async () => {
   // Function to handle story icon press
   const handlePress = (story) => {
     console.log(`Open story: ${story}`);
@@ -27,6 +27,18 @@ const StorybookApp = () => {
     },
   ];
 
+  // call backend api to get list of basic story info
+  let storyList = await axios.get(`${process.env.BACKEND_URL}/get-stories`, { params: { username: state.username } });
+  let retrievedData = [];
+
+  storyList.foreach((story) => {
+    storyInfo = {
+      id: story.storyID,
+      title: story.title
+    }
+
+    retrievedData.push(storyInfo);
+  });
 
   return (
     <SafeAreaView style={styles.container}>

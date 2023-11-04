@@ -13,6 +13,7 @@
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
     "axios": "^1.6.0",
+    "dotenv": "^16.3.1",
     "expo": "~49.0.15",
     "expo-linear-gradient": "~12.3.0",
     "expo-screen-orientation": "^6.2.0",
