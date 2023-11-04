@@ -5,10 +5,10 @@ const { User, Story } = require('../models/modelSchema');
 
 // route: /get-story
 
-router.get('/:storyid', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         // find story document and return list of texts and image links
-        const { storyID } = req.params;
+        const storyID = req.query.storyID;
         const story = await User.findOne({ storyID: storyID });
 
         // check if story exists
