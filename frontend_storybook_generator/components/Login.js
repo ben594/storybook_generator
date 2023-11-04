@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { SafeAreaView, KeyboardAvoidingView, StyleSheet, View, TextInput, Text, TouchableOpacity, Platform } from 'react-native';
 
-const loginScreen = ( { navigation } ) => {
+const LoginScreen = ( { navigation } ) => {
   const onPressLogin = async () => {
     // TODO implement AuthU 
     // try {
@@ -130,6 +130,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default loginScreen;
+export default LoginScreen;
 
           
