@@ -7,9 +7,7 @@ const UserSchema = new mongoose.Schema({
     required: true,
   },
   storyIDs: {
-    type: [
-        {type: Schema.Types.ObjectId, ref: "Story"}
-    ],
+    type: [String],
     required: true,
   }
 });
@@ -20,7 +18,7 @@ const StorySchema = new mongoose.Schema({
         required: true
     },
     title: {
-        type: [String],
+        type: String,
         required: true
     },
     texts: {

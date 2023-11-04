@@ -9,7 +9,7 @@ const axios = require('axios');
 
 // openai config
 const openai = new OpenAI({
-    apiKey: process.env.OPEN_API_KEY,
+    apiKey: process.env.OPENAI_API_KEY,
 });
 
 // azure config
@@ -20,7 +20,6 @@ const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountK
 const blobServiceClient = new BlobServiceClient(`https://${accountName}.blob.core.windows.net`, sharedKeyCredential);
 
 // route: /create-story
-
 createStoryRoute.get('/', (req, res) => {
     res.send('Welcome to the create story route!');
 });
@@ -43,56 +42,61 @@ createStoryRoute.post('/', async (req, res) => {
         }
 
         // get output from chat gpt
-        const chatPrompt = getChatPrompt(age, mainCharacter, keywords, userPrompt);
-        const chatCompletion = await openai.chat.completions.create({
-            messages: [{ role: "user", content: chatPrompt }],
-            model: "gpt-3.5-turbo",
-        });
+        const chatResponse = await getChatResponse(age, mainCharacter, keywords, userPrompt);
 
         // get output from dalle
         const style = "any style"; // TODO: implement style for dalle images
-        const imagePrompt = getImagePrompt(chatPrompt, style);
-        const image = await openai.createImage({
-            prompt: imagePrompt,
-            n: 1,
-            size: "256x256",
-        });
-        imageURL = response.data.data[0].url;
+        const description = chatResponse; // TODO: set image description
+        const imageURL = await getDalleResponse(description, style);
+
+        // generate new story id
+        const storyID = uuidv4(); 
 
         // store dalle output in azure and get hosted image url
-        hostedImageURL = getAndStoreImage(imageURL, username, storyID);
+        const hostedImageURL = await getAndStoreImage(imageURL, storyID);
 
-        // generate new story document and add to database
-        const storyID = uuidv4(); 
-        const newStory = new Story({ storyID: storyID, title: title, texts: [chatCompletion], images: [hostedImageURL] });
+        // add story to database
+        const newStory = new Story({ storyID: storyID, title: title, texts: [chatResponse], images: [hostedImageURL] });
         const insertedStory = await newStory.save();
 
         // link story id to user in the database
         var userStories = user.storyIDs;
-        userStories.push(hostedImageURL);
+        userStories.push(storyID);
         user.storyIDs = userStories;
         await user.save();
 
         // return story object
         return res.status(201).json(insertedStory);
-
     } catch (err) {
         return res.status(500).send(err.stack);
     }
 });
 
-function getChatPrompt(age, mainCharacter, keywords, prompt) {
-    // TODO: fill in more detailed chat prompt
-    const dummyPrompt = "Tell me a story."
-    return dummyPrompt;
+async function getChatResponse(age, mainCharacter, keywords, userPrompt) {
+    const chatPrompt = "Tell me the first paragraph of a story. Make the paragraph 20 words long.";
+    const chatCompletion = await openai.chat.completions.create({
+        messages: [{ role: "user", content: chatPrompt }],
+        model: "gpt-3.5-turbo",
+    });
+    const chatResponse = chatCompletion.choices[0].message.content;
+    console.log("Received chat response: ", chatResponse);
+    return chatResponse;
 }
 
-function getImagePrompt(description, style) {
-    // TODO: fill in more detailed image prompt
-    const dummyPrompt = "Generate a random image."
+async function getDalleResponse(description, style) {
+    // TODO: include style in the prompt
+    const prompt = description;
+    const image = await openai.images.generate({
+        prompt: prompt,
+        n: 1,
+        size: "256x256",
+    });
+    console.log("Received image url: ", image.data[0].url);
+    const imageURL = image.data[0].url;
+    return imageURL;
 }
 
-async function getAndStoreImage(imageURL, username, storyID) {
+async function getAndStoreImage(imageURL, storyID) {
     try {
         // get image from dalle image URL
         const imageResponse = await axios.get(imageURL, { responseType: 'arraybuffer' });
@@ -102,8 +106,8 @@ async function getAndStoreImage(imageURL, username, storyID) {
         }
 
         // create unique name for the image to be stored in azure
-        const imageID = uuidv4(); 
-        const blobName = `${username}_${storyID}_${imageID}.jpg`;
+        const imageID = uuidv4();
+        const blobName = `${storyID}_${imageID}.png`;
 
         // azure client
         const containerClient = blobServiceClient.getContainerClient(containerName);
@@ -122,4 +126,4 @@ async function getAndStoreImage(imageURL, username, storyID) {
     }
 }
 
-module.exports = { createStoryRoute, getChatPrompt, getImagePrompt };
+module.exports = { createStoryRoute, getAndStoreImage };
