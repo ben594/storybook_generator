@@ -18,9 +18,9 @@ router.post('/', async (req, res) => {
         if (user != null) {
             loginStatus = true;
         }
-        
+
         return res.status(200).send({ loginStatus: loginStatus });
-    } catch (err) {
+    } catch(err) {
         return res.status(500).send(err.stack);
     }
 });

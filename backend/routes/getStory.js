@@ -22,7 +22,7 @@ router.get('/:storyid', async (req, res) => {
         };
 
         return res.status(200).json({ story: storyData });
-    } catch (err) {
+    } catch(err) {
         return res.status(500).send(err.stack);
     }
 });

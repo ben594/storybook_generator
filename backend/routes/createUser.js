@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
         const newUser = new User({ username: username });
         const insertedUser = await newUser.save();
         return res.status(201).json(insertedUser);
-    } catch (err) {
+    } catch(err) {
         return res.status(500).send(err.stack);
     }
 });

@@ -15,7 +15,7 @@ router.get('/:username', async (req, res) => {
         }
         const storyIDs = user.storyIDs;
         return res.status(200).json({ storyIDs: storyIDs });
-    } catch (err) {
+    } catch(err) {
         return res.status(500).send(err.stack);
     }
 });
