@@ -4,10 +4,20 @@ const { v4: uuidv4 } = require('uuid');
 const { OpenAI } = require('openai');
 const mongoose = require('mongoose');
 const { User, Story } = require('../models/modelSchema');
+const { BlobServiceClient, StorageSharedKeyCredential } = require('@azure/storage-blob');
+const axios = require('axios');
 
+// openai config
 const openai = new OpenAIApi({
     apiKey: process.env.OPEN_API_KEY,
 });
+
+// azure config
+const accountName = process.env.AZURE_ACCOUNT_NAME;
+const accountKey = process.env.AZURE_ACCOUNT_KEY;
+const containerName = process.env.AZURE_CONTAINER_NAME;
+const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
+const blobServiceClient = new BlobServiceClient(`https://${accountName}.blob.core.windows.net`, sharedKeyCredential);
 
 // route: /create-story
 
@@ -47,21 +57,26 @@ router.post('/', async (req, res) => {
             n: 1,
             size: "256x256",
         });
-        image_url = response.data.data[0].url;
+        imageURL = response.data.data[0].url;
 
-        // TODO: store dalle output in azure
-        hosted_image_url = image_url // TODO: replace this with the actual hosted image url
+        // store dalle output in azure and get hosted image url
+        hostedImageURL = getAndStoreImage(imageURL, username, storyID);
 
         // generate new story document and add to database
-        const insertedStory = await createAndSaveStory(Story, title, chatCompletion, hosted_image_url);
+        const storyID = uuidv4(); 
+        const newStory = new Story({ storyID: storyID, title: title, texts: [chatCompletion], images: [hostedImageURL] });
+        const insertedStory = await newStory.save();
 
         // link story id to user in the database
-        await linkStoryToUser(user, insertedStory.storyID);
+        var userStories = user.storyIDs;
+        userStories.append(hostedImageURL);
+        user.storyIDs = userStories;
+        await user.save();
 
         // return story object
         return res.status(201).json(insertedStory);
 
-    } catch(err) {
+    } catch (err) {
         return res.status(500).send(err.stack);
     }
 });
@@ -77,27 +92,34 @@ function getImagePrompt(description, style) {
     const dummyPrompt = "Generate a random image."
 }
 
-async function createAndSaveStory(Story, title, chatCompletion, hosted_image_url) {
-    const storyID = uuidv4(); 
-    const newStory = new Story({ 
-        storyID: storyID, 
-        title: title, 
-        texts: [chatCompletion], 
-        images: [hosted_image_url] 
-    });
-    const insertedStory = await newStory.save();
-    return insertedStory;
+async function getAndStoreImage(imageURL, username, storyID) {
+    try {
+        // get image from dalle image URL
+        const imageResponse = await axios.get(imageURL, { responseType: 'arraybuffer' });
+        if (imageResponse.status !== 200) {
+            console.error('Unable to get image from the DALL-E URL.');
+            return;
+        }
+
+        // create unique name for the image to be stored in azure
+        const imageID = uuidv4(); 
+        const blobName = `${username}_${storyID}_${imageID}`;
+
+        // azure client
+        const containerClient = blobServiceClient.getContainerClient(containerName);
+        const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+        const hostedImageURL = blockBlobClient.url;
+
+        // upload image to azure
+        const imageBuffer = Buffer.from(imageResponse.data);
+        await blockBlobClient.upload(imageBuffer, imageBuffer.length);
+
+        console.log(`Image "${blobName}" uploaded to Azure.`);
+
+        return hostedImageURL;
+    } catch (err) {
+        console.error(err);
+    }
 }
 
-async function linkStoryToUser(user, storyID) {
-    var userStories = user.storyIDs;
-    userStories.push(storyID);
-    user.storyIDs = userStories;
-    await user.save();
-}
-
-module.exports = {
-    router,
-    createAndSaveStory,
-    linkStoryToUser
-};
+module.exports = { router, getChatPrompt, getImagePrompt };

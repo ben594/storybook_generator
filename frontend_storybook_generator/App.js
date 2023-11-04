@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import StorybookApp from './components/StorybookApp';
 
 async function changeScreenOrientation() {
@@ -13,7 +13,11 @@ export default function App() {
     changeScreenOrientation();
   }, []);
 
-  return <StorybookApp />;
+  return (
+    <SafeAreaView>
+      <StorybookApp />
+    </SafeAreaView>
+  )
 }
 
 
