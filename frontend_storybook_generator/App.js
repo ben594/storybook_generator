@@ -23,8 +23,11 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName='LoginScreen'>
-        <Stack.Screen name='LoginScreen' component={LoginScreen} />
-        <Stack.Screen name='StoryScreen' component={StorybookApp} />
+        <Stack.Screen name='LoginScreen' component={LoginScreen} options={{ headerShown: false }}/>
+        <Stack.Screen 
+        name='StoryScreen' 
+        component={StorybookApp} 
+        options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
