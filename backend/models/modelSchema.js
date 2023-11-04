@@ -20,11 +20,11 @@ const StorySchema = new mongoose.Schema({
         required: true
     },
     texts: {
-        type: List[String],
+        type: [String],
         required: true
     },
     images: {
-        type: List[String],
+        type: [String],
         required: true
     }
 });
