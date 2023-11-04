@@ -1,7 +1,7 @@
 const express = require('express');
-const mongoose = require("mongoose")
-const router = express.Router()
-const { User, Story } = required('../models/modelSchema')
+const mongoose = require('mongoose');
+const router = express.Router();
+const { User, Story } = required('../models/modelSchema');
 
 // route: /login
 router.get('/', (req, res) => {
