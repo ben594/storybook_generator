@@ -10,21 +10,13 @@ const StoryIcon = ({ title, onPress }) => (
 
 const styles = StyleSheet.create({
   storyIcon: {
-    width: 100,
+    width: 70,
     height: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    margin: 10,
-    borderRadius: 10,
-    elevation: 3,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    marginHorizontal: 20,
+    marginVertical: 30,
+    backgroundColor: 'black',
   },
   storyTitle: {
-    fontSize: 16,
   },
 });
 
