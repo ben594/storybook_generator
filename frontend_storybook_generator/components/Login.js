@@ -1,25 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { SafeAreaView, KeyboardAvoidingView, StyleSheet, View, TextInput, Text, TouchableOpacity, Platform } from 'react-native';
+import axios from 'axios';
 import Button from './Button';
+import { UserContext } from '../App.js';
 
 const LoginScreen = ( { navigation } ) => {
-  const onPressLogin = async () => {
-    // TODO implement AuthU 
-    // try {
-    // log in attempt
-    // const response = await axios.get('', { username: state.username });
-    // if (response.isSuccess) {
-        // If login is successful, navigate to the 'Dashboard' screen and pass username
-    navigation.navigate('StoryScreen', { username: state.username });
-    // } else {
-    //     // If there is a login error, handle it appropriately
-    //     setState({ ...state, loginError: response.errorMessage });
-    // }
-    // } catch (error) {
-    // // Handle exceptions
-    // setState({ ...state, loginError: error.message });
-    // }
-  };
+    const { setUsername } = useContext(UserContext);
+
+    const onPressLogin = () => {
+        axios.post('https://storybookaiserver.azurewebsites.net/login', { username: state.username })
+          .then(response => {
+            if (response.data.loginStatus == true) {
+                setUsername(state.username); // Update the context value
+                navigation.navigate('StoryScreen', { username: state.username });
+            } else {
+              // TODO, update state to reflect username not found
+              setState({ ...state, loginError: response.data.errorMessage });
+            }
+          })
+          .catch(error => {
+            // Handle exceptions
+            setState({ ...state, loginError: error.message });
+          });
+      };
 
   const onPressForgotPassword = () => {
     // TODO
