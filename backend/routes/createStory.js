@@ -69,7 +69,7 @@ createStoryRoute.post('/', async (req, res) => {
 
         // link story id to user in the database
         var userStories = user.storyIDs;
-        userStories.append(hostedImageURL);
+        userStories.push(hostedImageURL);
         user.storyIDs = userStories;
         await user.save();
 

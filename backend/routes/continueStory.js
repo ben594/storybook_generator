@@ -10,20 +10,21 @@ const openai = new OpenAI({
 });
 
 // route: /continue-story
+
 router.get('/', (req, res) => {
     res.send('Welcome to the continue story route!');
 });
 
-// get current user story progression
+// get current user story progression and add next page
 router.post('/', async (req, res) => {
-    const storyID = req.body.StoryID
-    const userStories = await Story.findOne({ StoryID: StoryID })
-    if (!userStories) {
-        return res.status(404).send('Story not found');
+    const storyID = req.body.StoryID;
+    const story = await Story.findOne({ StoryID: StoryID });
+    if (!story) {
+        return res.status(500).send('Story not found');
     }
 
-    const textProgress = userStories.texts
-    const imageProgress = userStories.images
+    const textProgress = story.texts;
+    const imageProgress = story.images;
 
     // concatenate all previous text prompts to maintain story context
     const concatenatedTextPrompts = textList.join(" ");
@@ -33,19 +34,19 @@ router.post('/', async (req, res) => {
     // generate the next part of the story by continuing from the concatenated text prompts
     const nextTextPrompt = continueStoryPrompt(concatenatedTextPrompts);
     // generate the prompt for the next image based on the latest image's description and style
-    const nextImagePrompt = createNewImagePrompt(latestImage.description, latestImage.style);
+    const nextImagePrompt = continueImagePrompt(latestImage.description, latestImage.style);
 
      // Generate new text and image
      const newText = await generateText(nextTextPrompt); 
      const newImage = await generateImage(nextImagePrompt); 
  
      // Save the new text and image to the user's story
-     userStories.text_progression.push(newText);
-     userStories.images.push(newImage);
-     await userStories.save();
+     story.texts.push(newText);
+     story.images.push(newImage);
+     await story.save();
 
-     // Respond with the new story parts
-     res.json({ newText, newImage });
+     // Respond with the updated story
+     res.json(story);
 });
 
 // function to create a new text prompt based on the previous text
@@ -56,7 +57,7 @@ function continueStoryPrompt(textPrompt) {
 }
 
 // function to create a new image prompt from previous image prompts
-function contineuImagePrompt(description, style) {
+function continueImagePrompt(description, style) {
     // TODO
     const modifiedDescription = `Create an image that follows the theme of the previous one but introduces new elements based on the latest part of the story: ${description}`;
     return modifiedDescription;
