@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
@@ -9,17 +9,19 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NativeScreenContainer } from 'react-native-screens';
 import AppLoader from './components/AppLoader';
 
+export const UserContext = React.createContext();
 
 async function changeScreenOrientation() {
   await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
 }
 
 export default function App() {
+  const [username, setUsername] = useState(null); 
   const [isLoading, setIsLoading] = useState(true);
-  
+
   useEffect(() => {
     changeScreenOrientation();
-    // Simulate a loading process
+    // simulate a loading process
     setTimeout(() => {
       setIsLoading(false);
     }, 3000); // 3 seconds
@@ -33,6 +35,7 @@ export default function App() {
   }
 
   return (
+    <UserContext.Provider value={{ username, setUsername }}>
     <NavigationContainer>
       <Stack.Navigator initialRouteName='LoginScreen'>
         <Stack.Screen name='LoginScreen' component={LoginScreen} options={{ headerShown: false }}/>
@@ -42,6 +45,7 @@ export default function App() {
         options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
+    </UserContext.Provider>
   );
 }
 
