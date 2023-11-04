@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import StorybookApp from './components/StorybookApp';
 
 async function changeScreenOrientation() {
-  await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT);
+  await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
 }
 
 export default function App() {
@@ -12,12 +13,7 @@ export default function App() {
     changeScreenOrientation();
   }, []);
 
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+  return <StorybookApp />;
 }
 
 
