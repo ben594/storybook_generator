@@ -1,8 +1,9 @@
 // StorybookApp.js
 import React from 'react';
-import { View, StyleSheet, FlatList, Text } from 'react-native';
+import { View, StyleSheet, FlatList, Text, SafeAreaView } from 'react-native';
 import StoryIcon from './StoryIcon'; // Assuming StoryIcon.js is in the same folder
 import NavBar from './NavBar'; // Assuming NavBar.js is in the same folder
+import CircularButton from './CircularButton';
 
 const StorybookApp = () => {
   // Function to handle story icon press
@@ -24,15 +25,97 @@ const StorybookApp = () => {
       id: '58694a0f-3da1-471f-bd96-145571e29d72',
       title: 'Third Item',
     },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: 'Third Item',
+    },
   ];
 
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* Story icons */}
+      <Text style={styles.logo}> StoryBook </Text>
+      <CircularButton style={styles.addStoryButton}/>
       <View style={styles.storiesContainer}>
         <FlatList style={styles.FlatlistStyles} data={DATA}
-          numColumns={4}
+          numColumns={3}
           renderItem={({item}) => <StoryIcon title={item.title} onPress={() => handlePress('Story 1')}/>}
           keyExtractor={this._keyExtractor}
         />
@@ -42,22 +125,29 @@ const StorybookApp = () => {
 
       {/* Navigation Bar */}
       <NavBar />
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: 'aliceblue',
+    justifyContent: 'space-between',
+  },
+  logo: {
+    alignSelf: 'center',
+    fontSize: 25,
   },
   storiesContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: 670,
+    alignItems: 'center'
   },
+  addStoryButton: {
+    position: 'absolute',
+    top: 1,
+    left: 20,
+  }
 });
 
 export default StorybookApp;
