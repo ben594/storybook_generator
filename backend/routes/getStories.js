@@ -5,14 +5,10 @@ const { User, Story } = require('../models/modelSchema');
 
 // route: /get-stories
 
-router.get('/', (req, res) => {
-    res.send('Welcome to the get stories route!');
-});
-
-router.post('/', async (req, res) => {
+router.get('/:username', async (req, res) => {
     try {
         // find user document and return list of story IDs
-        const username = req.body.username;
+        const { username } = req.params;
         const user = await User.findOne({ username: username });
         if (user === null) {
             return res.status(500).send("Invalid username");
