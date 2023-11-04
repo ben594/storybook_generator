@@ -11,6 +11,7 @@ router.get('/', (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
+        // create new user document in database
         const username = req.body.username;
         const newUser = new User({ username: username });
         const insertedUser = await newUser.save();
