@@ -2,7 +2,11 @@ require('dotenv').config()
 
 const express = require('express');
 const app = express();
-const port = process.env.PORT;
+const mongoose = require("mongoose");
+app.use(express.json());
+
+const PORT = process.env.PORT;
+const MONGO_DB_URI = process.env.MONGO_DB_URI;
 
 // routes
 const createUserRoute = require('./routes/createUser');
@@ -13,7 +17,7 @@ const createStoryRoute = require('./routes/createStory');
 const continueStoryRoute = require('./routes/continueStory');
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+    res.send('Hello World!')
 });
 
 // create user route
@@ -34,6 +38,16 @@ app.use('/create-story', createStoryRoute);
 // continue story route
 app.use('/continue-story', continueStoryRoute);
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-});
+const start = async () => {
+    try {
+        await mongoose.connect(MONGO_DB_URI);
+        app.listen(PORT, () => {
+            console.log(`Server started on port ${PORT}`)
+        });
+    } catch (error) {
+        console.error(error);
+        process.exit(1);
+    }
+};
+  
+start();
