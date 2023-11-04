@@ -53,15 +53,10 @@ router.post('/', async (req, res) => {
         hosted_image_url = image_url // TODO: replace this with the actual hosted image url
 
         // generate new story document and add to database
-        const storyID = uuidv4(); 
-        const newStory = new Story({ storyID: storyID, title: title, texts: [chatCompletion], images: [hosted_image_url] });
-        const insertedStory = await newStory.save();
+        const insertedStory = await createAndSaveStory(Story, title, chatCompletion, hosted_image_url);
 
         // link story id to user in the database
-        var userStories = user.storyIDs;
-        userStories.append(hosted_image_url);
-        user.storyIDs = userStories;
-        await user.save();
+        await linkStoryToUser(user, insertedStory.storyID);
 
         // return story object
         return res.status(201).json(insertedStory);
@@ -82,4 +77,27 @@ function getImagePrompt(description, style) {
     const dummyPrompt = "Generate a random image."
 }
 
-module.exports = { router, getChatPrompt, getImagePrompt };
+async function createAndSaveStory(Story, title, chatCompletion, hosted_image_url) {
+    const storyID = uuidv4(); 
+    const newStory = new Story({ 
+        storyID: storyID, 
+        title: title, 
+        texts: [chatCompletion], 
+        images: [hosted_image_url] 
+    });
+    const insertedStory = await newStory.save();
+    return insertedStory;
+}
+
+async function linkStoryToUser(user, storyID) {
+    var userStories = user.storyIDs;
+    userStories.push(storyID);
+    user.storyIDs = userStories;
+    await user.save();
+}
+
+module.exports = {
+    router,
+    createAndSaveStory,
+    linkStoryToUser
+};
