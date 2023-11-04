@@ -6,15 +6,9 @@ import NavBar from './NavBar'; // Assuming NavBar.js is in the same folder
 import CircularButton from './CircularButton';
 import axios from 'axios';
 
-const StorybookApp = ( { route } ) => {
+const StorybookApp = ( { route, navigation } ) => {
   const [username, setUsername] = useState('');
   const [storyData, setStoryData] = useState([]);
-
-  // Function to handle story icon press
-  const handlePress = (story) => {
-    console.log(`Open story: ${story}`);
-    // Here you would navigate to the story's screen or component
-  };
 
   // run this when this page first renders
   useEffect(() => {
@@ -36,14 +30,33 @@ const StorybookApp = ( { route } ) => {
 
         retrievedData.push(storyInfo);
       }
-      
+
       setStoryData(retrievedData);
     })
     .catch(error => {
       console.error(error);
     });
   }, []);
-  
+
+  // Function to handle story icon press
+  const handlePress = (storyID) => {
+    console.log(`Open story: ${storyID}`);
+    // Here you would navigate to the story's screen or component
+    // get full story data (text and image urls) from the database
+    axios.get(`https://storybookaiserver.azurewebsites.net/get-story`, { params: { storyID: storyID } })
+    .then(response => {
+      const responseStoryData = response.data.story;
+
+      const texts = responseStoryData.texts;
+      const images = responseStoryData.images;
+
+      // navigate to book viewer and pass the username, story id, texts, images
+      navigation.navigate('BookViewerScreen', { username: username, storyID: storyID, texts: texts, images: images });
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -53,7 +66,7 @@ const StorybookApp = ( { route } ) => {
       <View style={styles.storiesContainer}>
         <FlatList style={styles.FlatlistStyles} data={storyData}
           numColumns={2}
-          renderItem={({item}) => <StoryIcon title={item.title} onPress={() => handlePress('Story 1')}/>}
+          renderItem={ ({ item }) => <StoryIcon title={item.title} onPress={ () => handlePress(item.storyID) }/> }
           keyExtractor={this._keyExtractor}
         />
 
