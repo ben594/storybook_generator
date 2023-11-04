@@ -18,7 +18,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     height: 50,
-    backgroundColor: '#DDD',
   },
 });
 

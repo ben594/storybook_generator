@@ -1,23 +1,27 @@
 // CircularButton.js
 import React from 'react';
-import { Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, View } from 'react-native';
 import {AntDesign} from '@expo/vector-icons'
 
-const CircularButton = ({ onPress }) => (
-  <TouchableOpacity style={styles.button} onPress={onPress}>
-    <AntDesign name="pluscircle" size={24} color="grey"/>
-  </TouchableOpacity>
+const CircularButton = ({ onPress, style }) => (
+  <View style={[styles.wrapper, style]}>
+    <TouchableOpacity style={styles.button} onPress={onPress}>
+      <AntDesign name="pluscircle" size={28} color="#5a8896"/>
+    </TouchableOpacity>
+  </View>
 );
 
 const styles = StyleSheet.create({
+  wrapper: {
+    position: 'absolute',
+  },
   button: {
     height: 30,
     width: 30,
-    marginHorizontal: 5,
-    marginVertical: 5,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  
 });
 
 export default CircularButton;
