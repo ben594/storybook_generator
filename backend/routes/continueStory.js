@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const { User, Story } = required('../models/modelSchema');
+const { User, Story } = require('../models/modelSchema');
 const { OpenAI } = require('openai');
 
 // process openAI key
