@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const createStoryRoute = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const { OpenAI } = require('openai');
 const mongoose = require('mongoose');
@@ -8,7 +8,7 @@ const { BlobServiceClient, StorageSharedKeyCredential } = require('@azure/storag
 const axios = require('axios');
 
 // openai config
-const openai = new OpenAIApi({
+const openai = new OpenAI({
     apiKey: process.env.OPEN_API_KEY,
 });
 
@@ -21,11 +21,11 @@ const blobServiceClient = new BlobServiceClient(`https://${accountName}.blob.cor
 
 // route: /create-story
 
-router.get('/', (req, res) => {
+createStoryRoute.get('/', (req, res) => {
     res.send('Welcome to the create story route!');
 });
 
-router.post('/', async (req, res) => {
+createStoryRoute.post('/', async (req, res) => {
     try {
         // create story document in the database
         // get user input from request
@@ -69,7 +69,7 @@ router.post('/', async (req, res) => {
 
         // link story id to user in the database
         var userStories = user.storyIDs;
-        userStories.append(hostedImageURL);
+        userStories.push(hostedImageURL);
         user.storyIDs = userStories;
         await user.save();
 
@@ -103,7 +103,7 @@ async function getAndStoreImage(imageURL, username, storyID) {
 
         // create unique name for the image to be stored in azure
         const imageID = uuidv4(); 
-        const blobName = `${username}_${storyID}_${imageID}`;
+        const blobName = `${username}_${storyID}_${imageID}.jpg`;
 
         // azure client
         const containerClient = blobServiceClient.getContainerClient(containerName);
@@ -122,4 +122,4 @@ async function getAndStoreImage(imageURL, username, storyID) {
     }
 }
 
-module.exports = { router, getChatPrompt, getImagePrompt };
+module.exports = { createStoryRoute, getChatPrompt, getImagePrompt };

@@ -13,7 +13,7 @@ const createUserRoute = require('./routes/createUser');
 const loginRoute = require('./routes/login');
 const getStoriesRoute = require('./routes/getStories');
 const getStoryRoute = require('./routes/getStory');
-const createStoryRoute = require('./routes/createStory');
+const { createStoryRoute } = require('./routes/createStory');
 const continueStoryRoute = require('./routes/continueStory');
 
 app.get('/', (req, res) => {
