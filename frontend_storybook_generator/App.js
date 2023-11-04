@@ -7,6 +7,7 @@ import LoginScreen from './components/Login';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NativeScreenContainer } from 'react-native-screens';
+import AppLoader from './components/AppLoader';
 
 
 async function changeScreenOrientation() {
@@ -14,11 +15,22 @@ async function changeScreenOrientation() {
 }
 
 export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  
   useEffect(() => {
     changeScreenOrientation();
+    // Simulate a loading process
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000); // 3 seconds
   }, []);
 
+
   const Stack = createNativeStackNavigator();
+
+  if (isLoading) {
+    return <AppLoader />;
+  }
 
   return (
     <NavigationContainer>

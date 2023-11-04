@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { SafeAreaView, KeyboardAvoidingView, StyleSheet, View, TextInput, Text, TouchableOpacity, Platform } from 'react-native';
+import Button from './Button';
 
-const loginScreen = ( { navigation } ) => {
+const LoginScreen = ( { navigation } ) => {
   const onPressLogin = async () => {
     // TODO implement AuthU 
     // try {
@@ -34,7 +35,6 @@ const loginScreen = ( { navigation } ) => {
   });
 
   return (
-    <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}
@@ -59,48 +59,36 @@ const loginScreen = ( { navigation } ) => {
             onChangeText={(text) => setState({ ...state, password: text })} 
           />
         </View>
-        <TouchableOpacity onPress={onPressForgotPassword}>
+      <TouchableOpacity onPress={onPressForgotPassword}>
         <Text style={styles.forgotAndSignUpText}>Forgot Password?</Text>
       </TouchableOpacity>
 
         {/* login and signup options */}
-      <TouchableOpacity
-        onPress={onPressLogin}
-        style={styles.loginBtn}
-      >
-        <Text style={styles.loginText}>LOGIN</Text>
-      </TouchableOpacity>
+      <View style={{flexDirection: 'row'}}>
+        <Button onPress={onPressLogin} text={'Login'}/>
 
-      <TouchableOpacity
-        onPress={onPressSignUp}
-      >
-        <Text style={styles.forgotAndSignUpText}>Signup</Text>
-      </TouchableOpacity>
+        <Button onPress={onPressSignUp} text={'Sign Up'}/>
+      </View>
     </KeyboardAvoidingView>
-  </SafeAreaView>
 );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#4FD3DA', // Set the background color of the safe area
-  },
   container: {
     flex: 1,
-    backgroundColor: '#4FD3DA',
+    backgroundColor: '#ead8ca',
     alignItems: 'center',
     justifyContent: 'center',
   },
   title: {
     fontWeight: 'bold',
     fontSize: 50,
-    color: '#fb5b5a',
+    color: 'black',
     marginBottom: 40,
   },
   inputView: {
     width: '80%',
-    backgroundColor: '#3AB4BA',
+    backgroundColor: '#c8b8aa',
     borderRadius: 25,
     height: 50,
     marginBottom: 20,
@@ -112,12 +100,13 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   forgotAndSignUpText: {
-    color: 'white',
+    color: 'black',
+    marginVertical: 10,
     fontSize: 11,
   },
   loginBtn: {
     width: '80%',
-    backgroundColor: '#fb5b5a',
+
     borderRadius: 25,
     height: 50,
     alignItems: 'center',
@@ -130,6 +119,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default loginScreen;
+export default LoginScreen;
 
           
