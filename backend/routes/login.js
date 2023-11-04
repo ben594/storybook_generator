@@ -9,15 +9,20 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    // check if user exists in the database
-    let loginStatus = false;
-    const username = req.body.username
-    const user = await User.findOne({ username: username})
-    if (user != null) {
-        loginStatus = true;
-    }
+    try {
+        // check if user exists in the database
+        let loginStatus = false;
+        const username = req.body.username
+        const user = await User.findOne({ username: username })
 
-    return res.status(200).send({ loginStatus: loginStatus });
+        if (user != null) {
+            loginStatus = true;
+        }
+        
+        return res.status(200).send({ loginStatus: loginStatus });
+    } catch (err) {
+        return res.status(500).send(err.stack);
+    }
 });
 
 module.exports = router;
