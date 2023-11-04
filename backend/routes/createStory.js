@@ -9,7 +9,7 @@ const axios = require('axios');
 
 // openai config
 const openai = new OpenAI({
-    apiKey: process.env.OPEN_API_KEY,
+    apiKey: process.env.OPENAI_API_KEY,
 });
 
 // azure config
@@ -48,6 +48,8 @@ createStoryRoute.post('/', async (req, res) => {
             messages: [{ role: "user", content: chatPrompt }],
             model: "gpt-3.5-turbo",
         });
+        const chatResponse = chatCompletion.choices[0].message.content;
+        console.log("chat response: ", chatResponse);
 
         // get output from dalle
         const style = "any style"; // TODO: implement style for dalle images
@@ -57,19 +59,20 @@ createStoryRoute.post('/', async (req, res) => {
             n: 1,
             size: "256x256",
         });
-        imageURL = response.data.data[0].url;
+        imageURL = image.data.data[0].url;
 
         // store dalle output in azure and get hosted image url
         hostedImageURL = getAndStoreImage(imageURL, username, storyID);
+        // hostedImageURL = "https://storybookai.blob.core.windows.net/storybookaiimages/IP1_EX8_Plot5.png";
 
         // generate new story document and add to database
         const storyID = uuidv4(); 
-        const newStory = new Story({ storyID: storyID, title: title, texts: [chatCompletion], images: [hostedImageURL] });
+        const newStory = new Story({ storyID: storyID, title: title, texts: [chatResponse], images: [hostedImageURL] });
         const insertedStory = await newStory.save();
 
         // link story id to user in the database
         var userStories = user.storyIDs;
-        userStories.push(hostedImageURL);
+        userStories.push(storyID);
         user.storyIDs = userStories;
         await user.save();
 
@@ -83,13 +86,26 @@ createStoryRoute.post('/', async (req, res) => {
 
 function getChatPrompt(age, mainCharacter, keywords, prompt) {
     // TODO: fill in more detailed chat prompt
-    const dummyPrompt = "Tell me a story."
+    const dummyPrompt = "Tell me the first paragraph of a story.";
+    // const finalPrompt = "You are a interactive story creator and you are going to create a paragraph of a story based \
+    // on the keywords and provide three options to let the reader choose how the story continues using the following format: Option 1: ... \
+    // Option 2: ... \
+    // Option 3: ... \
+    // \
+    // Keywords: \
+    // Car \
+    // Fly \
+    // \
+    // Keep the story to a proper length and end it at a certain point with a smooth ending. After finishing the story, display \
+    // \
+    // [END]";
     return dummyPrompt;
 }
 
 function getImagePrompt(description, style) {
     // TODO: fill in more detailed image prompt
     const dummyPrompt = "Generate a random image."
+    return dummyPrompt;
 }
 
 async function getAndStoreImage(imageURL, username, storyID) {
@@ -102,8 +118,8 @@ async function getAndStoreImage(imageURL, username, storyID) {
         }
 
         // create unique name for the image to be stored in azure
-        const imageID = uuidv4(); 
-        const blobName = `${username}_${storyID}_${imageID}.jpg`;
+        const imageID = uuidv4();
+        const blobName = `${username}_${storyID}_${imageID}.png`;
 
         // azure client
         const containerClient = blobServiceClient.getContainerClient(containerName);
