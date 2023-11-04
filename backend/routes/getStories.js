@@ -14,9 +14,12 @@ router.post('/', async (req, res) => {
         // find user document and return list of story IDs
         const username = req.body.username;
         const user = await User.findOne({ username: username });
+        if (user === null) {
+            return res.status(500).send("Invalid username");
+        }
         const storyIDs = user.storyIDs;
         return res.status(200).json({ storyIDs: storyIDs });
-    } catch {
+    } catch (err) {
         return res.status(500).send(err.stack);
     }
 });
