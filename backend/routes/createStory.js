@@ -49,24 +49,26 @@ createStoryRoute.post('/', async (req, res) => {
             model: "gpt-3.5-turbo",
         });
         const chatResponse = chatCompletion.choices[0].message.content;
-        console.log("chat response: ", chatResponse);
+        console.log("Received chat response: ", chatResponse);
 
         // get output from dalle
         const style = "any style"; // TODO: implement style for dalle images
         const imagePrompt = getImagePrompt(chatPrompt, style);
-        const image = await openai.createImage({
+        const image = await openai.images.generate({
             prompt: imagePrompt,
             n: 1,
             size: "256x256",
         });
-        imageURL = image.data.data[0].url;
+        console.log("Received image url: ", image.data[0].url);
+        const imageURL = image.data[0].url;
+
+        // generate new story id
+        const storyID = uuidv4(); 
 
         // store dalle output in azure and get hosted image url
-        hostedImageURL = getAndStoreImage(imageURL, username, storyID);
-        // hostedImageURL = "https://storybookai.blob.core.windows.net/storybookaiimages/IP1_EX8_Plot5.png";
+        const hostedImageURL = await getAndStoreImage(imageURL, username, storyID);
 
-        // generate new story document and add to database
-        const storyID = uuidv4(); 
+        // add story to database
         const newStory = new Story({ storyID: storyID, title: title, texts: [chatResponse], images: [hostedImageURL] });
         const insertedStory = await newStory.save();
 
