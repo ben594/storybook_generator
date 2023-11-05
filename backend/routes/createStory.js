@@ -29,8 +29,11 @@ createStoryRoute.post('/', async (req, res) => {
         // create story document in the database
         // get user input from request
         const username = req.body.username;
+        console.log('username: ', username)
         const age = req.body.age;
         const mainCharacter = req.body.mainCharacter;
+        const setting = req.body.setting;
+        const year = req.body.year;
         const userPrompt = req.body.prompt;
 
         // check user exists
@@ -40,25 +43,38 @@ createStoryRoute.post('/', async (req, res) => {
         }
 
         // get output from chat gpt
-        const chatResponse = await getChatResponse(age, mainCharacter, userPrompt);
+        const chatResponse = await getChatResponse(age, mainCharacter, year, setting, userPrompt);
 
-        // get output from dalle
-        const style = "any style"; // TODO: implement style for dalle images
-        const description =  chatResponse.story; // TODO: set image description
-        const imageURL = await getDalleResponse(description, style);
+        console.log("chatResponse: ", chatResponse)
 
         // generate new story id
         const storyID = uuidv4(); 
 
-        // store dalle output in azure and get hosted image url
-        const hostedImageURL = await getAndStoreImage(imageURL, storyID);
+        let hostedImageURLs = []
+
+        for (const text of chatResponse.parsedResponse.texts) {
+            if (!text.toLowerCase().startsWith("option")) {
+                let description = text
+                let imageURL = await getDalleResponse(description, age, year)
+                let hostedImageURL = await getAndStoreImage(imageURL, storyID);
+                console.log("HOSTEDIMAGEURL: ", hostedImageURL)
+                hostedImageURLs.push(hostedImageURL)
+                console.log("HOSTEDIMAGEURLs: ", hostedImageURLs)
+            }
+        }
+
+
+        console.log("FINISHED WAITING!!!\n\n\n\n")
+
+ 
 
         // add story to database
         const newStory = new Story({ 
             storyID: storyID, 
-            title: chatResponse.title, 
-            texts: [chatResponse.story],
-            images: [hostedImageURL] 
+            title: chatResponse.parsedResponse.title, 
+            texts: chatResponse.parsedResponse.texts,
+            chatHistory: chatResponse.chatHistory,
+            images: hostedImageURLs
         });
         const insertedStory = await newStory.save();
 
@@ -75,11 +91,32 @@ createStoryRoute.post('/', async (req, res) => {
     }
 });
 
-async function getChatResponse(age, mainCharacter, userPrompt) {
-    const chatPrompt = "Tell me the first paragraph of a story. Make the paragraph 20 words long.";
-    const titlePrompt = "Give one potential title for this story";
+async function getChatResponse(age, mainCharacter, setting, year, userPrompt) {
+    const keywords = `
+    main character: ${mainCharacter},
+    setting: ${setting},
+    year: ${year},
+    the story is about: ${userPrompt}
+    `
+    const chatPrompt = `
+    You are an interactive story creator and you are going to create \
+    an story for a ${age} year old kid based on the keywords. You are first going to give a title. \
+    And then, you are going to write 3 paragraphs of the story and under 200 words in total. At the end, you will provide the reader with three options \
+    to let them choose how the story continues.
+    
+    
+    Please use this format for giving options:
+    Option 1: ...
+    Option 2: ...
+    Option 3: ...
 
-    // get story
+    You should not remind the reader to choose how the story continues.
+
+    Keywords:
+    ${keywords}
+    `;
+
+    // get title and story
     const storyCompletion = await openai.chat.completions.create({
         messages: [{role: "user", content: chatPrompt }],
         model: "gpt-3.5-turbo",
@@ -87,20 +124,18 @@ async function getChatResponse(age, mainCharacter, userPrompt) {
     const storyResponse = storyCompletion.choices[0].message.content;
     console.log("Received story response: ", storyResponse);
 
-    // get title
-    const titleCompletion = await openai.chat.completions.create({
-        messages: [{role: "user", content: titlePrompt }],
-        model: "gpt-3.5-turbo",
-    });
-    const titleResponse = titleCompletion.choices[0].message.content;
-    console.log("Received title response: ", titleResponse);
 
-    return { story: storyResponse, title: titleResponse };
+    //chathistory: [{role, content}]
+    //parsedResponse: {texts: [String], title}
+
+    return {chatHistory: [{role: 'user', content: chatPrompt}, {role: 'assistant', content: storyResponse}], parsedResponse: parseResponse(storyResponse)};
 }
 
-async function getDalleResponse(description, style) {
+async function getDalleResponse(description, age, year) {
     // TODO: include style in the prompt
-    const prompt = description;
+    const prompt = `
+    Description: ${description}
+    `;
     const image = await openai.images.generate({
         prompt: prompt,
         n: 1,
@@ -139,6 +174,18 @@ async function getAndStoreImage(imageURL, storyID) {
     } catch (err) {
         console.error(err);
     }
+}
+
+
+const parseResponse = (res) => {
+    res = res.split('\n')
+    res = res.filter((para) => (para.length > 5))
+    // const paragraphs =  res.filter((para) => !para.toLowerCase().startsWith("option"))
+    // const options =  res.filter((para) => para.toLowerCase().startsWith("option"))
+
+    title = res[0].split(': ')[1]
+    res = res.slice(1)
+    return {texts: res, title: title}
 }
 
 module.exports = { createStoryRoute, getAndStoreImage };
