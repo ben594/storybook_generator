@@ -51,7 +51,6 @@ createStoryRoute.post('/', async (req, res) => {
         const storyID = uuidv4(); 
 
         let hostedImageURLs = []
-
         for (const text of chatResponse.parsedResponse.texts) {
             if (!text.toLowerCase().startsWith("option")) {
                 let description = text
@@ -134,7 +133,7 @@ async function getChatResponse(age, mainCharacter, setting, year, userPrompt) {
 async function getDalleResponse(description, age, year) {
     // TODO: include style in the prompt
     const prompt = `
-    Description: ${description}
+    Create a cartoon of the following story: ${description}
     `;
     const image = await openai.images.generate({
         prompt: prompt,
@@ -185,6 +184,18 @@ const parseResponse = (res) => {
 
     title = res[0].split(': ')[1]
     res = res.slice(1)
+
+    let texts = []
+    let optionCnt = 0
+    for (const text of res) {
+        texts.push(text)
+        if (text.toLowerCase().startsWith("option")) {
+            optionCnt += 1
+            if (optionCnt >= 3) {
+                break
+            }
+        }
+    }
     return {texts: res, title: title}
 }
 
