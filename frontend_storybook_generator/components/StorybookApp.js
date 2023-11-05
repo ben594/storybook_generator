@@ -58,15 +58,17 @@ const StorybookApp = ( { route, navigation } ) => {
       // loop through response data to get ids and titles of stories
       for (var i = 0; i < responseStoryData.length; i++) {
         const story = responseStoryData[i];
+        console.log("story: ", story);
         const storyInfo = {
           id: story.storyID,
           title: story.title,
-          imageURL: story.images[0]
+          imageURL: story.thumbnailURL
         };
 
         retrievedData.push(storyInfo);
       }
 
+      console.log("retrieved data: ", retrievedData);
       setStoryData(retrievedData);
     })
     .catch(error => {
