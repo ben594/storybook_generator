@@ -9,7 +9,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NativeScreenContainer } from 'react-native-screens';
 import AppLoader from './components/AppLoader';
-import UserContext from './components/UserContext';
+import UserProvider from './components/UserContext';
 
 async function changeScreenOrientation() {
   await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
@@ -35,7 +35,7 @@ export default function App() {
   }
 
   return (
-    <UserContext.Provider value={{ username, setUsername }}>
+    <UserProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName='LoginScreen'>
         <Stack.Screen name='LoginScreen' component={LoginScreen} options={{ headerShown: false }}/>
@@ -51,7 +51,7 @@ export default function App() {
         />
       </Stack.Navigator>
     </NavigationContainer>
-    </UserContext.Provider>
+    </UserProvider>
   );
 }
 

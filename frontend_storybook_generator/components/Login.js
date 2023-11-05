@@ -2,10 +2,14 @@ import React, { useState, useContext } from 'react';
 import { SafeAreaView, KeyboardAvoidingView, StyleSheet, View, TextInput, Text, TouchableOpacity, Platform } from 'react-native';
 import axios from 'axios';
 import Button from './Button';
-import UserContext from './UserContext';
+import UserProvider, { UserContext } from './UserContext';
 
 const LoginScreen = ( { navigation } ) => {
-    const { setUsername } = useContext(UserContext);
+  const { setUsername } = useContext(UserContext);
+  const [state, setState] = useState({
+      username: '',
+      password: '',
+  });
 
     const onPressLogin = () => {
         axios.post('https://storybookaiserver.azurewebsites.net/login', { username: state.username })
@@ -31,11 +35,6 @@ const LoginScreen = ( { navigation } ) => {
   const onPressSignUp = () => {
     // TODO
   };
-
-  const [state, setState] = useState({
-    username: '',
-    password: '',
-  });
 
   return (
       <KeyboardAvoidingView
