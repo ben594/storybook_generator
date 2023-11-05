@@ -3,11 +3,13 @@ import { StyleSheet, View, Text, Image } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import { useFocusEffect } from '@react-navigation/native';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import OptionChoices from './OptionChoices';
 
 import Button from './Button';
 
 const BookViewer = ({ route, navigation }) => {
   const [pages, setPages] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
 
   useFocusEffect(
     useCallback(() => {
@@ -24,6 +26,8 @@ const BookViewer = ({ route, navigation }) => {
       };
     }, [])
   );
+
+  const isLastPage = currentPage === pages.length - 1;
 
   useEffect(() => {
     console.log("images: ", route.params);
@@ -44,17 +48,28 @@ const BookViewer = ({ route, navigation }) => {
   }, []);
 
   return (
-    <PagerView style={styles.pagerView} initialPage={0}>
-      {pages.map((page) => {
+    <PagerView
+      style={styles.pagerView}
+      initialPage={0}
+      onPageSelected={(e) => setCurrentPage(e.nativeEvent.position)}
+    >
+      {pages.map((page, index) => {
+        const isLastPage = index === pages.length - 1;
+
         return (
           <View key={page.pageNumber} style={styles.page}>
-            <Image
-              style={styles.imageView}
-              source={{ uri: page.imageURL }}
-            />
-            <Text style={styles.textView}>
-              {page.text}
-            </Text>
+            <Image style={styles.imageView} source={{ uri: page.imageURL }} />
+            <View style={isLastPage ? styles.lastPageTextContainer : styles.textContainer}>
+              <Text style={styles.textView}>{page.text}</Text>
+              {/* Render OptionChoices only on the last page */}
+              {isLastPage && (
+                <OptionChoices
+                  onChoiceSelect={(choiceId) => {
+                    console.log(`User selected: ${choiceId}`);
+                  }}
+                />
+              )}
+            </View>
           </View>
         );
       })}
@@ -65,23 +80,31 @@ const BookViewer = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   pagerView: {
     flex: 1,
-    backgroundColor: '#ead8ca'
+    backgroundColor: '#ead8ca',
   },
   page: {
-    flexDirection: 'row', // Set the children to be in a row
+    flexDirection: 'row', // set children to be in a row
+    flex: 1,
+  },
+  textContainer: {
+    flex: 1,
     justifyContent: 'center',
-    flex: 1, // Ensure the page takes full height
+  },
+  lastPageTextContainer: {
+    flex: 1,
+    justifyContent: 'flex-start', // align text to the top for the last page
   },
   textView: {
-    flex: 1, // Take up remaining space after image
-    margin: 20,
     fontSize: 20,
-    fontFamily: 'Baskerville'
+    fontFamily: 'Baskerville',
+    margin: 20,
   },
   imageView: {
     width: 375,
     height: 375,
-  }
+    // remove the flex: 1 to maintain the image size
+  },
+  // add styles for your OptionChoices component as needed
 });
 
 export default BookViewer;
