@@ -94,8 +94,8 @@ const styles = StyleSheet.create({
     width: width * 0.6
   },
   imageView: {
-    height: width * 0.45,
-    width: width * 0.45
+    height: width * 0.75,
+    width: '100%'
   }
 });
 
