@@ -1,10 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
 import PagerView from 'react-native-pager-view';
+import { useFocusEffect } from '@react-navigation/native';
+import * as ScreenOrientation from 'expo-screen-orientation';
+
 import Button from './Button';
 
 const BookViewer = ({ route, navigation }) => {
   const [pages, setPages] = useState([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      // Function to lock the orientation
+      const lockOrientation = async () => {
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_LEFT);
+      };
+
+      lockOrientation();
+
+      // Function to unlock the orientation when the component is unmounted or loses focus
+      return () => {
+        ScreenOrientation.unlockAsync();
+      };
+    }, [])
+  );
 
   useEffect(() => {
     console.log("images: ", route.params);

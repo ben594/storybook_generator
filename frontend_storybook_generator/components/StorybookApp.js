@@ -75,9 +75,6 @@ const StorybookApp = ( { route, navigation } ) => {
   // Function to handle story icon press
   const handlePress = async (storyID) => {
     try {
-      // Lock the orientation to landscape before navigating
-      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-  
       // get full story data (text and image urls) from the database
       const response = await axios.get(`https://storybookaiserver.azurewebsites.net/get-story`, { params: { storyID: storyID } });
       const responseStoryData = response.data.story;
@@ -93,8 +90,6 @@ const StorybookApp = ( { route, navigation } ) => {
       });
     } catch (error) {
       console.error(error);
-      // Optionally reset orientation if the navigation fails
-      await ScreenOrientation.unlockAsync();
     }
   };
 
