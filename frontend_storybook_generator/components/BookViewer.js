@@ -3,12 +3,14 @@ import { StyleSheet, View, Text, Image } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import { useFocusEffect } from '@react-navigation/native';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import * as Speech from 'expo-speech';
 import OptionChoices from './OptionChoices';
 
 import Button from './Button';
 
 const BookViewer = ({ route, navigation }) => {
   const [pages, setPages] = useState([]);
+  const [position, setPosition] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
 
   useFocusEffect(
@@ -45,12 +47,30 @@ const BookViewer = ({ route, navigation }) => {
     }
 
     setPages(newPages);
+
+    setTimeout(() => {
+      Speech.speak(newPages[0].text, { rate: 0.8, voice: "com.apple.ttsbundle.Karen-compact" });
+    }, 2000);
   }, []);
+
+  const handlePageScroll = async (e) => {
+    const newPos = e.nativeEvent.position;
+    const offset = e.nativeEvent.offset;
+    console.log("offset: ", offset);
+    if (offset == 0) {
+      console.log("page change detected");
+      const voices = await Speech.getAvailableVoicesAsync();
+      console.log("voices: ", voices);
+      Speech.stop();
+      Speech.speak(pages[newPos].text, { rate: 0.8, voice: "com.apple.ttsbundle.Karen-compact" });
+    }
+  }
 
   return (
     <PagerView
       style={styles.pagerView}
       initialPage={0}
+      onPageScroll={(e) => handlePageScroll(e) }
       onPageSelected={(e) => setCurrentPage(e.nativeEvent.position)}
     >
       {pages.map((page, index) => {
