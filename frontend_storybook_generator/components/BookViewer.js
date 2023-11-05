@@ -56,8 +56,10 @@ const BookViewer = ({ route, navigation }) => {
     const newPos = e.nativeEvent.position;
     const offset = e.nativeEvent.offset;
     if (offset == 0) {
-      const voices = await Speech.getAvailableVoicesAsync();
-      Speech.stop();
+      const currentlySpeaking = await Speech.isSpeakingAsync();
+      if (currentlySpeaking) {
+        Speech.stop();
+      }  
       Speech.speak(pages[newPos].text, { rate: 0.8, voice: "com.apple.ttsbundle.Karen-compact" });
     }
   }
