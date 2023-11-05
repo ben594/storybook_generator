@@ -1,29 +1,61 @@
 // StorybookApp.js
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, Text, SafeAreaView } from 'react-native';
-import StoryIcon from './StoryIcon'; // Assuming StoryIcon.js is in the same folder
-import NavBar from './NavBar'; // Assuming NavBar.js is in the same folder
+import React, { useState, useEffect, useContext } from 'react';
+import { TextInput, Button, View, StyleSheet, FlatList, Text, SafeAreaView } from 'react-native';
+import StoryIcon from './StoryIcon'; 
+import NavBar from './NavBar'; 
 import CircularButton from './CircularButton';
 import axios from 'axios';
+import AddStory from './AddStory';
+import UserProvider, { UserContext } from './UserContext';
+
+// const username = req.body.username;
+// const title = req.body.title;
+// const age = req.body.age;
+// const mainCharacter = req.body.mainCharacter;
+// const keywords = req.body.keywords;
+// const userPrompt = req.body.prompt;
+
 
 const StorybookApp = ( { route, navigation } ) => {
-  const [username, setUsername] = useState('');
+  const { username } = useContext(UserContext);
   const [storyData, setStoryData] = useState([]);
+  // construct a modal for adding new stories
+  const [isAddStoryModalVisible, setAddStoryModalVisible] = useState(false);
+
+  // function to handle adding a new story
+  const handleAddNewStory = (newStoryTitle) => {
+    // logic to send the new story title to the backend or to add it to the local state
+    console.log(newStoryTitle);
+    // axios POST request to backend server to save the new story
+    // axios.post('https://storybookaiserver.azurewebsites.net/createStory', { username: username })
+    // .then(response => {
+    //   if (response.data.loginStatus == true) {
+    //       setUsername(state.username); // Update the context value
+    //       navigation.navigate('StoryScreen', { username: username });
+    //   } else {
+    //     // TODO, update state to reflect username not found
+    //     setState({ ...state, loginError: response.data.errorMessage });
+    //   }
+    // })
+    // .catch(error => {
+    //   // Handle exceptions
+    //   setState({ ...state, loginError: error.message });
+    // });
+    setAddStoryModalVisible(false); // hhde the modal after submission
+  };
 
   // run this when this page first renders
   useEffect(() => {
-    setUsername(route.params.username);
-   
     // call backend api to get list of basic story info
-    axios.get(`https://storybookaiserver.azurewebsites.net/get-stories`, { params: { username: route.params.username } })
+    axios.get(`https://storybookaiserver.azurewebsites.net/get-stories`, { params: { username: username } })
     .then(response => {
       const responseStoryData = response.data.storyInfo;
       let retrievedData = [];
 
       // loop through response data to get ids and titles of stories
       for (var i = 0; i < responseStoryData.length; i++) {
-        story = responseStoryData[i];
-        storyInfo = {
+        const story = responseStoryData[i];
+        const storyInfo = {
           id: story.storyID,
           title: story.title
         };
@@ -41,17 +73,20 @@ const StorybookApp = ( { route, navigation } ) => {
   // Function to handle story icon press
   const handlePress = (storyID) => {
     console.log(`Open story: ${storyID}`);
-    // Here you would navigate to the story's screen or component
+    console.log(username)
     // get full story data (text and image urls) from the database
     axios.get(`https://storybookaiserver.azurewebsites.net/get-story`, { params: { storyID: storyID } })
     .then(response => {
       const responseStoryData = response.data.story;
-
       const texts = responseStoryData.texts;
       const images = responseStoryData.images;
-
       // navigate to book viewer and pass the username, story id, texts, images
-      navigation.navigate('BookViewerScreen', { username: username, storyID: storyID, texts: texts, images: images });
+      navigation.navigate('BookViewerScreen', {
+        username: username,
+        storyID: storyID,
+        texts: texts,
+        images: images
+      });
     })
     .catch(error => {
       console.error(error);
@@ -62,7 +97,12 @@ const StorybookApp = ( { route, navigation } ) => {
     <SafeAreaView style={styles.container}>
       {/* Story icons */}
       <Text style={styles.logo}> StoryBook </Text>
-      <CircularButton style={styles.addStoryButton}/>
+      <CircularButton style={styles.addStoryButton} onPress={() => setAddStoryModalVisible(true)} />
+      <AddStory
+        isVisible={isAddStoryModalVisible}
+        onAddStory={handleAddNewStory}
+        onClose={() => setAddStoryModalVisible(false)}
+      />
       <View style={styles.storiesContainer}>
         <FlatList style={styles.FlatlistStyles} data={storyData}
           numColumns={2}
@@ -98,7 +138,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 50,
     left: 20,
-  }
+  },
 });
 
 export default StorybookApp;
