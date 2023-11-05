@@ -54,7 +54,7 @@ createStoryRoute.post('/', async (req, res) => {
         for (const text of chatResponse.parsedResponse.texts) {
             if (!text.toLowerCase().startsWith("option")) {
                 let description = text
-                let imageURL = await getDalleResponse(description, age, year)
+                let imageURL = await getDalleResponse(description)
                 let hostedImageURL = await getAndStoreImage(imageURL, storyID);
                 console.log("HOSTEDIMAGEURL: ", hostedImageURL)
                 hostedImageURLs.push(hostedImageURL)
@@ -100,7 +100,7 @@ async function getChatResponse(age, mainCharacter, setting, year, userPrompt) {
     const chatPrompt = `
     You are an interactive story creator and you are going to create \
     an story for a ${age} year old kid based on the keywords. You are first going to give a title. \
-    And then, you are going to write 3 paragraphs of the story and under 200 words in total. At the end, you will provide the reader with three options \
+    And then, you are going to write 3 paragraphs of the story and under 200 words in total. At the end, you will provide the reader with three options under 20 words \
     to let them choose how the story continues.
     
     
@@ -130,10 +130,10 @@ async function getChatResponse(age, mainCharacter, setting, year, userPrompt) {
     return {chatHistory: [{role: 'user', content: chatPrompt}, {role: 'assistant', content: storyResponse}], parsedResponse: parseResponse(storyResponse)};
 }
 
-async function getDalleResponse(description, age, year) {
+async function getDalleResponse(description) {
     // TODO: include style in the prompt
     const prompt = `
-    Create a cartoon of the following story: ${description}
+    Create a word-free, scenic, and artistic image using the style of Studio Ghibli of the following story: ${description}
     `;
     const image = await openai.images.generate({
         prompt: prompt,
