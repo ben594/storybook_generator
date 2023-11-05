@@ -29,10 +29,8 @@ createStoryRoute.post('/', async (req, res) => {
         // create story document in the database
         // get user input from request
         const username = req.body.username;
-        const title = req.body.title;
         const age = req.body.age;
         const mainCharacter = req.body.mainCharacter;
-        const keywords = req.body.keywords;
         const userPrompt = req.body.prompt;
 
         // check user exists
@@ -42,11 +40,11 @@ createStoryRoute.post('/', async (req, res) => {
         }
 
         // get output from chat gpt
-        const chatResponse = await getChatResponse(age, mainCharacter, keywords, userPrompt);
+        const chatResponse = await getChatResponse(age, mainCharacter, userPrompt);
 
         // get output from dalle
         const style = "any style"; // TODO: implement style for dalle images
-        const description = chatResponse; // TODO: set image description
+        const description =  chatResponse.story; // TODO: set image description
         const imageURL = await getDalleResponse(description, style);
 
         // generate new story id
@@ -56,7 +54,12 @@ createStoryRoute.post('/', async (req, res) => {
         const hostedImageURL = await getAndStoreImage(imageURL, storyID);
 
         // add story to database
-        const newStory = new Story({ storyID: storyID, title: title, texts: [chatResponse], images: [hostedImageURL] });
+        const newStory = new Story({ 
+            storyID: storyID, 
+            title: chatResponse.title, 
+            texts: [chatResponse.story],
+            images: [hostedImageURL] 
+        });
         const insertedStory = await newStory.save();
 
         // link story id to user in the database
@@ -72,15 +75,27 @@ createStoryRoute.post('/', async (req, res) => {
     }
 });
 
-async function getChatResponse(age, mainCharacter, keywords, userPrompt) {
+async function getChatResponse(age, mainCharacter, userPrompt) {
     const chatPrompt = "Tell me the first paragraph of a story. Make the paragraph 20 words long.";
-    const chatCompletion = await openai.chat.completions.create({
-        messages: [{ role: "user", content: chatPrompt }],
+    const titlePrompt = "Give one potential title for this story";
+
+    // get story
+    const storyCompletion = await openai.chat.completions.create({
+        messages: [{role: "user", content: chatPrompt }],
         model: "gpt-3.5-turbo",
     });
-    const chatResponse = chatCompletion.choices[0].message.content;
-    console.log("Received chat response: ", chatResponse);
-    return chatResponse;
+    const storyResponse = storyCompletion.choices[0].message.content;
+    console.log("Received story response: ", storyResponse);
+
+    // get title
+    const titleCompletion = await openai.chat.completions.create({
+        messages: [{role: "user", content: titlePrompt }],
+        model: "gpt-3.5-turbo",
+    });
+    const titleResponse = titleCompletion.choices[0].message.content;
+    console.log("Received title response: ", titleResponse);
+
+    return { story: storyResponse, title: titleResponse };
 }
 
 async function getDalleResponse(description, style) {

@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import StorybookApp from './components/StorybookApp';
 import LoginScreen from './components/Login';
+import BookViewer from './components/BookViewer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NativeScreenContainer } from 'react-native-screens';
@@ -39,9 +40,15 @@ export default function App() {
       <Stack.Navigator initialRouteName='LoginScreen'>
         <Stack.Screen name='LoginScreen' component={LoginScreen} options={{ headerShown: false }}/>
         <Stack.Screen 
-        name='StoryScreen' 
-        component={StorybookApp} 
-        options={{ headerShown: false }} />
+          name='StoryScreen' 
+          component={StorybookApp} 
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='BookViewerScreen'
+          component={BookViewer}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
     </UserProvider>

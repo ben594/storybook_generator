@@ -79,13 +79,14 @@ const StorybookApp = ( { route, navigation } ) => {
     .then(response => {
       const responseStoryData = response.data.story;
       const texts = responseStoryData.texts;
-      const images = responseStoryData.images;
+      const imageURLs = responseStoryData.imageURLs;
+
       // navigate to book viewer and pass the username, story id, texts, images
       navigation.navigate('BookViewerScreen', {
         username: username,
         storyID: storyID,
         texts: texts,
-        images: images
+        imageURLs: imageURLs
       });
     })
     .catch(error => {
@@ -106,7 +107,14 @@ const StorybookApp = ( { route, navigation } ) => {
       <View style={styles.storiesContainer}>
         <FlatList style={styles.FlatlistStyles} data={storyData}
           numColumns={2}
-          renderItem={ ({ item }) => <StoryIcon title={item.title} onPress={ () => handlePress(item.storyID) }/> }
+          renderItem={ ({ item }) =>
+            <StoryIcon
+              title={item.title}
+              onPress={() => { 
+                handlePress(item.id)
+              }}
+            />
+          }
           keyExtractor={this._keyExtractor}
         />
 
