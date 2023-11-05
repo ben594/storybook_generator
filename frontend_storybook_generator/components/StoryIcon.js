@@ -3,8 +3,8 @@ import React from 'react';
 import { Text, TouchableOpacity, StyleSheet, View, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const StoryIcon = ({ title, onPress, style, imageURL }) => (
-  <View style={style}>
+const StoryIcon = ({ title, onPress, imageURL }) => (
+  <View>
     <TouchableOpacity style={styles.storyIcon} onPress={onPress}>
       <View style={styles.book}>
         <View style={styles.spine}/>
@@ -34,7 +34,7 @@ const StoryIcon = ({ title, onPress, style, imageURL }) => (
       </View>
       <Text style={styles.title}>
           {title}
-        </Text>
+      </Text>
     </TouchableOpacity>
   </View>
 );
@@ -42,17 +42,6 @@ const StoryIcon = ({ title, onPress, style, imageURL }) => (
 const width = 200
 
 const styles = StyleSheet.create({
-  // storyIcon: {
-  //   width: 70,
-  //   height: 100,
-  //   marginHorizontal: 20,
-  //   marginVertical: 30,
-  //   backgroundColor: '#66b0af',
-
-  //   borderRadius: ''
-  // },
-  // storyTitle: {
-  // },
   storyIcon: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -102,6 +91,7 @@ const styles = StyleSheet.create({
     color: '#000',
     textAlign: 'center',
     paddingTop: 20,
+    width: width * 0.6
   },
   imageView: {
     height: width * 0.45,
