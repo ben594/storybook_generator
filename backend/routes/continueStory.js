@@ -3,7 +3,6 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const { User, Story } = require('../models/modelSchema');
 const { OpenAI } = require('openai');
-const { getAndStoreImage } = require('./createStory');
 
 // process openAI key
 const openai = new OpenAI({
@@ -32,27 +31,28 @@ router.post('/', async (req, res) => {
         const imageProgress = story.images;
         const chatHistory = story.chatHistory;
 
-        // concatenate all previous text progress to maintain story context
-        const concatenatedTextProgress = textProgress.join(" ");
-        console.log("Concatenated text progress: ", concatenatedTextProgress);
+        // get output from chat gpt
+        const chatResponse = await continueChatResponse(chatHistory, story.texts.length, selectedOption);
 
-        // track last image for consistent story images
-        const latestImageURL = imageProgress[imageProgress.length - 1];
+        console.log("chatResponse: ", chatResponse)
 
-        // generate the next part of the story by continuing from the concatenated text progress
-        const newText = await generateContinuedText(concatenatedTextProgress, selectedOption);
+        for (const text of chatResponse.parsedResponse.texts) {
+            if (!text.toLowerCase().startsWith("option")) {
+                let description = text
+                let imageURL = await getDalleResponse(description, age, year)
+                let hostedImageURL = await getAndStoreImage(imageURL, storyID);
+                console.log("HOSTEDIMAGEURL: ", hostedImageURL)
+                story.images.push(hostedImageURL)
+                console.log("HOSTEDIMAGEURLs: ", story.images)
+            }
+        }
 
-        // generate the next image
-        description = newText; // TODO: make description better
-        style = "default style"; // TODO: implement style
-        const newImageURL = await generateContinuedImage(description, style);
-
-        // store dalle output in azure and get hosted image url
-        const hostedImageURL = await getAndStoreImage(newImageURL, storyID);
+        console.log("FINISHED WAITING!!!\n\n\n\n")
         
-        // Save the new text and hosted image to the user's story
-        story.texts.push(newText);
-        story.images.push(hostedImageURL);
+
+        // Save the new texts and chatHistory to the user's story
+        story.texts.concat(chatResponse.parseResponse.texts);
+        story.chatHistory = chatResponse.chatHistory
         await story.save();
 
         // Respond with the updated story
@@ -62,32 +62,102 @@ router.post('/', async (req, res) => {
     }
 });
 
-async function generateContinuedText(concatenatedTextProgress, selectedOption) {
-    // TODO
-    const prompt = `Continue the story based on the following text: "${concatenatedTextProgress}". Provide 20 more words to the story.`;
+async function continueChatResponse(pastChatHistory, lenTexts, optionChoice) {
+    const chatPrompt = lenTexts>30 ? 
+    `
+    ${optionChoice}
 
-    const chatCompletion = await openai.chat.completions.create({
-        messages: [{ role: "user", content: prompt }],
+    Please end the story after this choice with a smooth ending. Display [END] at the end of the story. Do not display the option at the beginning, just display the story. 
+    `
+    :
+    `
+    ${optionChoice}
+
+    Please continue the story with the provided option. Do not display the option at the beginning, just display the story.
+    `
+
+    let chatHistory = pastChatHistory.concat([{role: 'user', content: chatPrompt}])
+
+    // get title and story
+    const storyCompletion = await openai.chat.completions.create({
+        messages: chatHistory,
         model: "gpt-3.5-turbo",
     });
+    const storyResponse = storyCompletion.choices[0].message.content;
+    console.log("Received story response: ", storyResponse);
 
-    const chatResponse = chatCompletion.choices[0].message.content;
-    console.log("Received chat response: ", chatResponse);
+    chatHistory = chatHistory.concat({role: 'assistant', content: storyResponse})
 
-    return chatResponse;
+    return {chatHistory, parsedResponse: parseResponse(storyResponse)};
 }
 
-async function generateContinuedImage(description, style) {
-    // TODO
-    const modifiedDescription = `Create an image that follows the theme of the story but introduces new elements based on the latest part of the story: ${description}`;
+
+async function getDalleResponse(description, age, year) {
+    // TODO: include style in the prompt
+    const prompt = `
+    Create a cartoon of the following story: ${description}
+    `;
     const image = await openai.images.generate({
-        prompt: modifiedDescription,
+        prompt: prompt,
         n: 1,
         size: "256x256",
     });
     console.log("Received image url: ", image.data[0].url);
     const imageURL = image.data[0].url;
     return imageURL;
+}
+
+async function getAndStoreImage(imageURL, storyID) {
+    try {
+        // get image from dalle image URL
+        const imageResponse = await axios.get(imageURL, { responseType: 'arraybuffer' });
+        if (imageResponse.status !== 200) {
+            console.error('Unable to get image from the DALL-E URL.');
+            return;
+        }
+
+        // create unique name for the image to be stored in azure
+        const imageID = uuidv4();
+        const blobName = `${storyID}_${imageID}.png`;
+
+        // azure client
+        const containerClient = blobServiceClient.getContainerClient(containerName);
+        const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+        const hostedImageURL = blockBlobClient.url;
+
+        // upload image to azure
+        const imageBuffer = Buffer.from(imageResponse.data);
+        await blockBlobClient.upload(imageBuffer, imageBuffer.length);
+
+        console.log(`Image "${blobName}" uploaded to Azure.`);
+
+        return hostedImageURL;
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+const parseResponse = (res) => {
+    res = res.split('\n')
+    res = res.filter((para) => (para.length > 5))
+    // const paragraphs =  res.filter((para) => !para.toLowerCase().startsWith("option"))
+    // const options =  res.filter((para) => para.toLowerCase().startsWith("option"))
+
+    title = res[0].split(': ')[1]
+    res = res.slice(1)
+
+    let texts = []
+    let optionCnt = 0
+    for (const text of res) {
+        texts.push(text)
+        if (text.toLowerCase().startsWith("option")) {
+            optionCnt += 1
+            if (optionCnt >= 3) {
+                break
+            }
+        }
+    }
+    return {texts: res, title: title}
 }
 
 module.exports = router;
