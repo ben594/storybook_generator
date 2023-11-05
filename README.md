@@ -1,6 +1,6 @@
 # Getting Started
 
-The app can currently be tested using Expo by installing the Expo Go mobile app. In your computer terminal, do the following steps:
+The app can currently be tested using Expo by installing the Expo Go mobile app. After you have Expo Go installed on your mobile device, in your computer terminal, do the following steps:
 ```
 git clone https://github.com/ben594/storybook_generator.git
 cd storybook_generator/frontend
