@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
     try {
         // find story document and return list of texts and image links
         const storyID = req.query.storyID;
-        const story = await User.findOne({ storyID: storyID });
+        const story = await Story.findOne({ storyID: storyID });
 
         // check if story exists
         if (story === null) {
