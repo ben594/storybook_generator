@@ -66,7 +66,14 @@ const StorybookApp = ( { route, navigation } ) => {
       <View style={styles.storiesContainer}>
         <FlatList style={styles.FlatlistStyles} data={storyData}
           numColumns={2}
-          renderItem={ ({ item }) => <StoryIcon title={item.title} onPress={ () => handlePress(item.storyID) }/> }
+          renderItem={ ({ item }) =>
+            <StoryIcon
+              title={item.title}
+              onPress={() => { 
+                handlePress(item.id)
+              }}
+            />
+          }
           keyExtractor={this._keyExtractor}
         />
 
