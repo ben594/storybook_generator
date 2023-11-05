@@ -7,6 +7,7 @@ import * as Speech from 'expo-speech';
 import OptionChoices from './OptionChoices';
 
 import Button from './Button';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const BookViewer = ({ route, navigation }) => {
   const [pages, setPages] = useState([]);
@@ -33,16 +34,28 @@ const BookViewer = ({ route, navigation }) => {
 
   useEffect(() => {
     var newPages = [];
+    let imgCnt = 0;
     for (var i = 0; i < route.params.texts.length; i++) {
       const text = route.params.texts[i];
-      const imageURL = route.params.imageURLs[i];
-      const page = {
-        text: text,
-        imageURL: imageURL,
-        pageNumber: (i + 1)
-      };
+      if (!text.toLowerCase().startsWith('option')) {  //if it is a paragraph
+        const imageURL = route.params.imageURLs[imgCnt];
+        let options = []
+        for (const text of route.params.texts.slice(i+1)) {
+          if (!text.toLowerCase().startsWith('option')) {  //if next text is not option, break
+            break
+          }
+          options.push(text)
+        }
 
-      newPages.push(page);
+        const page = {
+          text: text,
+          imageURL: imageURL,
+          pageNumber: (i + 1),
+          options: options
+        };
+        newPages.push(page);
+        imgCnt += 1
+      }
     }
 
     setPages(newPages);
@@ -63,37 +76,46 @@ const BookViewer = ({ route, navigation }) => {
   }
 
   return (
-    <PagerView
-      style={styles.pagerView}
-      initialPage={0}
-      onPageScroll={(e) => handlePageScroll(e) }
-      onPageSelected={(e) => setCurrentPage(e.nativeEvent.position)}
-    >
-      {pages.map((page, index) => {
-        const isLastPage = index === pages.length - 1;
+      <PagerView
+        style={styles.pagerView}
+        initialPage={0}
+        onPageScroll={(e) => handlePageScroll(e) }
+        onPageSelected={(e) => setCurrentPage(e.nativeEvent.position)}
+      >
+        {
+        
+        pages.map((page, index) => {
+          const isLastPage = index === pages.length - 1;
 
-        return (
-          <View key={page.pageNumber} style={styles.page}>
-            <Image style={styles.imageView} source={{ uri: page.imageURL }} />
-            <View style={isLastPage ? styles.lastPageTextContainer : styles.textContainer}>
-              <Text style={styles.textView}>{page.text}</Text>
-              {/* Render OptionChoices only on the last page */}
-              {isLastPage && (
-                <OptionChoices
-                  onChoiceSelect={(choiceId) => {
-                    console.log(`User selected: ${choiceId}`);
-                  }}
-                />
-              )}
+          return (
+            <View key={page.pageNumber} style={styles.page}>
+              <Image style={styles.imageView} source={{ uri: page.imageURL }} />
+              <View style={isLastPage ? styles.lastPageTextContainer : styles.textContainer}>
+                <Text style={styles.textView}>{page.text}</Text>
+                {/* Render OptionChoices only on the last page */}
+                {page.options.length > 0 && (
+                  <OptionChoices
+                    options={page.options}
+                    onChoiceSelect={(choiceId) => {
+                      if (isLastPage) {  //request continueStory
+
+                      }
+                      console.log(`User selected: ${choiceId}`);
+                    }}
+                  />
+                )}
+              </View>
             </View>
-          </View>
-        );
-      })}
-    </PagerView>
+          );
+        })}
+      </PagerView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeareaview: {
+    flex: 1,
+  },
   pagerView: {
     flex: 1,
     backgroundColor: '#ead8ca',
@@ -104,16 +126,17 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
-    justifyContent: 'center',
+    // justifyContent: 'center',
   },
   lastPageTextContainer: {
     flex: 1,
     justifyContent: 'flex-start', // align text to the top for the last page
   },
   textView: {
-    fontSize: 20,
+    fontSize: 15,
     fontFamily: 'Baskerville',
-    margin: 20,
+    marginTop: 20,
+    margin: 10,
     marginRight: 50,
   },
   imageView: {

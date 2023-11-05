@@ -18,10 +18,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#618289',
     alignItems: 'center',
     justifyContent: 'center',
+
   },
   text: {
     color: '#dfe7e8',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
     // alignSelf: 'center'
   },
 });
