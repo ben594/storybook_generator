@@ -32,7 +32,6 @@ const BookViewer = ({ route, navigation }) => {
   const isLastPage = currentPage === pages.length - 1;
 
   useEffect(() => {
-    console.log("images: ", route.params);
     var newPages = [];
     for (var i = 0; i < route.params.texts.length; i++) {
       const text = route.params.texts[i];
@@ -56,11 +55,8 @@ const BookViewer = ({ route, navigation }) => {
   const handlePageScroll = async (e) => {
     const newPos = e.nativeEvent.position;
     const offset = e.nativeEvent.offset;
-    console.log("offset: ", offset);
     if (offset == 0) {
-      console.log("page change detected");
       const voices = await Speech.getAvailableVoicesAsync();
-      console.log("voices: ", voices);
       Speech.stop();
       Speech.speak(pages[newPos].text, { rate: 0.8, voice: "com.apple.ttsbundle.Karen-compact" });
     }
