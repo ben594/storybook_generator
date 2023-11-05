@@ -11,30 +11,51 @@ const LoginScreen = ( { navigation } ) => {
       password: '',
   });
 
-    const onPressLogin = () => {
-        axios.post("https://storybookaiserver.azurewebsites.net/login", { username: state.username })
-          .then(response => {
-            if (response.data.loginStatus == true) {
-                setUsername(state.username); // Update the context value
-                navigation.navigate('StoryScreen', { username: state.username });
-            } else {
-              // TODO, update state to reflect username not found
-              setState({ ...state, loginError: response.data.errorMessage });
-            }
-          })
-          .catch(error => {
-            // Handle exceptions
-            setState({ ...state, loginError: error.message });
-          });
-      };
+  const onPressLogin = () => {
+      axios.post("https://storybookaiserver.azurewebsites.net/login", { username: state.username })
+        .then(response => {
+          if (response.data.loginStatus == true) {
+              setUsername(state.username); // Update the context value
+              navigation.navigate('StoryScreen', { username: state.username });
+          } else {
+            // TODO, update state to reflect username not found
+            setState({ ...state, loginError: response.data.errorMessage });
+          }
+        })
+        .catch(error => {
+          // Handle exceptions
+          setState({ ...state, loginError: error.message });
+        });
+    };
 
   const onPressForgotPassword = () => {
     // TODO
   };
 
   const onPressSignUp = () => {
-    // TODO
+    // check if username is empty
+    if (state.username.trim() === '') {
+      alert('Username cannot be empty.');
+      return;
+    }
+  
+    axios.post("https://storybookaiserver.azurewebsites.net/create-User", {
+      username: state.username,
+    })
+    .then(response => {
+      console.log(response.data.signUpStatus)
+      if (response.data.signUpStatus = true) {
+        setUsername(state.username); // update context value
+        navigation.navigate('StoryScreen', { username: state.username });
+      } else {
+        alert(response.data.errorMessage);
+      }
+    })
+    .catch(error => {
+      alert(error.message);
+    });
   };
+  
 
   return (
       <KeyboardAvoidingView
