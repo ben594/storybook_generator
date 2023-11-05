@@ -9,8 +9,8 @@ const AddStory = ({ isVisible, onAddStory, onClose }) => {
   const [setting, setSetting] = useState('');
   const [year, setYear] = useState('');
 
-  const handleAddNewStory = () => {
-    onAddStory();
+  const handleAddNewStory = async () => {
+    await onAddStory(age, character, setting, year);
 
     // reset input fields
     setAge('');
