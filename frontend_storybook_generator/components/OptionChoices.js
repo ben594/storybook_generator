@@ -17,7 +17,6 @@ const OptionChoices = ({ options, onChoiceSelect }) => {
     // passed onChoiceSelect function with the selected choice
     onChoiceSelect(selectedChoice);
   };
-  console.log("CHOICES: ")
 
   return (
     <View style={styles.container}>

@@ -1,18 +1,23 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, View, Text, Image } from 'react-native';
+import { StyleSheet, View, Text, Image, ScrollView } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import { useFocusEffect } from '@react-navigation/native';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import * as Speech from 'expo-speech';
 import OptionChoices from './OptionChoices';
+import axios from 'axios';
 
 import Button from './Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const BookViewer = ({ route, navigation }) => {
+  const [texts, setTexts] = useState([]);
+  const [imageURLs, setImageURLs] = useState([]);
   const [pages, setPages] = useState([]);
   const [position, setPosition] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
+  const [storyID, setStoryID] = useState('');
+  const [dummy, setDummy] = useState(0);
 
   useFocusEffect(
     useCallback(() => {
@@ -33,6 +38,13 @@ const BookViewer = ({ route, navigation }) => {
   const isLastPage = currentPage === pages.length - 1;
 
   useEffect(() => {
+    setTexts(route.params.texts);
+    setImageURLs(route.params.imageURLs);
+    setStoryID(route.params.storyID);
+  }, []);
+
+  useEffect(() => {
+    console.log("trigger create new pages");
     var newPages = [];
     let imgCnt = 0;
     for (var i = 0; i < route.params.texts.length; i++) {
@@ -54,57 +66,98 @@ const BookViewer = ({ route, navigation }) => {
           options: options
         };
         newPages.push(page);
-        imgCnt += 1
+        imgCnt += 1;
       }
     }
 
     setPages(newPages);
-
-    setTimeout(() => {
-      Speech.speak(newPages[0].text, { rate: 0.8, voice: "com.apple.ttsbundle.Karen-compact" });
-    }, 2000);
   }, []);
 
   const handlePageScroll = async (e) => {
     const newPos = e.nativeEvent.position;
     const offset = e.nativeEvent.offset;
-    if (offset == 0) {
-      const currentlySpeaking = await Speech.isSpeakingAsync();
-      if (currentlySpeaking) {
-        Speech.stop();
-      }  
-      Speech.speak(pages[newPos].text, { rate: 0.8, voice: "com.apple.ttsbundle.Karen-compact" });
-    }
   }
+
+  useEffect(() => {
+    console.log("new pages created");
+  }, [pages]);
 
   return (
       <PagerView
         style={styles.pagerView}
-        initialPage={0}
+        initialPage={route.params.startPage}
         onPageScroll={(e) => handlePageScroll(e) }
-        onPageSelected={(e) => setCurrentPage(e.nativeEvent.position)}
+        onPageSelected={async (e) =>{
+          Speech.speak(pages[e.nativeEvent.position].text, { rate: 0.8, voice: "com.apple.ttsbundle.Karen-compact" });
+          setCurrentPage(e.nativeEvent.position)
+        }}
       >
         {
-        
         pages.map((page, index) => {
           const isLastPage = index === pages.length - 1;
 
           return (
-            <View key={page.pageNumber} style={styles.page}>
+            <View key={`${page.pageNumber}`} style={styles.page}>
               <Image style={styles.imageView} source={{ uri: page.imageURL }} />
               <View style={isLastPage ? styles.lastPageTextContainer : styles.textContainer}>
                 <Text style={styles.textView}>{page.text}</Text>
                 {/* Render OptionChoices only on the last page */}
                 {page.options.length > 0 && (
+                  <ScrollView>
                   <OptionChoices
                     options={page.options}
-                    onChoiceSelect={(choiceId) => {
+                    onChoiceSelect={async (choiceId) => {
                       if (isLastPage) {  //request continueStory
+                        console.log(`User selected: ${choiceId}`);
 
+                        // make post request to continue story
+                        axios.post('https://storybookaiserver.azurewebsites.net/continue-story', { storyID: storyID, option: choiceId })
+                        .then((response) => {
+                          console.log("response.data: ", response.data);
+                          const responseStoryData = response.data;
+                          const newTexts = responseStoryData.texts;
+                          const newImageURLs = responseStoryData.images;
+
+                          // make new pages
+                          var newPages = [];
+                          let imgCnt = 0;
+                          for (var i = 0; i < newTexts.length; i++) {
+                            const text = newTexts[i];
+                            if (!text.toLowerCase().startsWith('option')) {  //if it is a paragraph
+                              const imageURL = newImageURLs[imgCnt];
+                              let options = []
+                              for (const text of newTexts.slice(i+1)) {
+                                if (!text.toLowerCase().startsWith('option')) {  //if next text is not option, break
+                                  break
+                                }
+                                options.push(text)
+                              }
+
+                              const page = {
+                                text: text,
+                                imageURL: imageURL,
+                                pageNumber: (i + 1),
+                                options: options
+                              };
+                              newPages.push(page);
+                              imgCnt += 1;
+                            }
+                          }
+
+                          setPages(newPages);
+                          if (dummy == 0) {
+                            setDummy("random thing");
+                          } else {
+                            setDummy(0);
+                          }                      
+                        })
+                        .catch(error => {
+                          console.error(error);
+                        });
                       }
-                      console.log(`User selected: ${choiceId}`);
                     }}
                   />
+                  </ScrollView>
                 )}
               </View>
             </View>
