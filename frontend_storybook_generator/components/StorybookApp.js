@@ -58,7 +58,6 @@ const StorybookApp = ( { route, navigation } ) => {
       // loop through response data to get ids and titles of stories
       for (var i = 0; i < responseStoryData.length; i++) {
         const story = responseStoryData[i];
-        console.log("story: ", story);
         const storyInfo = {
           id: story.storyID,
           title: story.title,
@@ -68,7 +67,6 @@ const StorybookApp = ( { route, navigation } ) => {
         retrievedData.push(storyInfo);
       }
 
-      console.log("retrieved data: ", retrievedData);
       setStoryData(retrievedData);
     })
     .catch(error => {
@@ -113,7 +111,7 @@ const StorybookApp = ( { route, navigation } ) => {
           renderItem={ ({ item }) =>
             <StoryIcon
               title={item.title}
-              // imageURL={item.}
+              imageURL={item.imageURL}
               onPress={() => { 
                 handlePress(item.id)
               }}
