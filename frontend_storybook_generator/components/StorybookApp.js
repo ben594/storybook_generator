@@ -7,6 +7,8 @@ import CircularButton from './CircularButton';
 import axios from 'axios';
 import AddStory from './AddStory';
 import UserProvider, { UserContext } from './UserContext';
+import * as ScreenOrientation from 'expo-screen-orientation';
+
 
 // const username = req.body.username;
 // const title = req.body.title;
@@ -71,27 +73,29 @@ const StorybookApp = ( { route, navigation } ) => {
   }, []);
 
   // Function to handle story icon press
-  const handlePress = (storyID) => {
-    console.log(`Open story: ${storyID}`);
-    console.log(username)
-    // get full story data (text and image urls) from the database
-    axios.get(`https://storybookaiserver.azurewebsites.net/get-story`, { params: { storyID: storyID } })
-    .then(response => {
+  const handlePress = async (storyID) => {
+    try {
+      // Lock the orientation to landscape before navigating
+      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+  
+      // get full story data (text and image urls) from the database
+      const response = await axios.get(`https://storybookaiserver.azurewebsites.net/get-story`, { params: { storyID: storyID } });
       const responseStoryData = response.data.story;
       const texts = responseStoryData.texts;
       const imageURLs = responseStoryData.imageURLs;
-
-      // navigate to book viewer and pass the username, story id, texts, images
+  
+      // Navigate to book viewer and pass the username, story id, texts, images
       navigation.navigate('BookViewerScreen', {
         username: username,
         storyID: storyID,
         texts: texts,
         imageURLs: imageURLs
       });
-    })
-    .catch(error => {
+    } catch (error) {
       console.error(error);
-    });
+      // Optionally reset orientation if the navigation fails
+      await ScreenOrientation.unlockAsync();
+    }
   };
 
   return (
