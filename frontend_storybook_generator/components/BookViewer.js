@@ -44,23 +44,17 @@ const BookViewer = ({ route, navigation }) => {
   }, []);
 
   return (
-    <PagerView style={styles.pagerView} initialPage={0} transitionStyle={'curl'} scrollEnabled={true}>
+    <PagerView style={styles.pagerView} initialPage={0}>
       {pages.map((page) => {
         return (
-          <View key={page.pageNumber}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Button style={{ width: 50 }} onPress={null} text={'Login'}/>
-              <Button onPress={null} text={'Sign Up'}/>
-            </View>
-            <View style={styles.pageView}>
-              <Image
-                style={styles.imageView}
-                source={{ uri: page.imageURL }}
-              />
-              <Text style={styles.textView}>
-                {page.text}
-              </Text>
-            </View>
+          <View key={page.pageNumber} style={styles.page}>
+            <Image
+              style={styles.imageView}
+              source={{ uri: page.imageURL }}
+            />
+            <Text style={styles.textView}>
+              {page.text}
+            </Text>
           </View>
         );
       })}
@@ -73,20 +67,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ead8ca'
   },
-  pageView: {
-    marginTop: 20,
-    alignItems: 'center',
+  page: {
+    flexDirection: 'row', // Set the children to be in a row
     justifyContent: 'center',
+    flex: 1, // Ensure the page takes full height
   },
   textView: {
-    margin: 30,
+    flex: 1, // Take up remaining space after image
+    margin: 20,
     fontSize: 20,
     fontFamily: 'Baskerville'
   },
   imageView: {
-    margin: "auto",
-    width: 256,
-    height: 256
+    width: 375,
+    height: 375,
   }
 });
 
