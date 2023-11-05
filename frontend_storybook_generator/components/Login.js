@@ -12,7 +12,7 @@ const LoginScreen = ( { navigation } ) => {
   });
 
     const onPressLogin = () => {
-        axios.post('https://storybookaiserver.azurewebsites.net/login', { username: state.username })
+        axios.post(`https://storybookaiserver.azurewebsites.net/login`, { username: state.username })
           .then(response => {
             if (response.data.loginStatus == true) {
                 setUsername(state.username); // Update the context value
