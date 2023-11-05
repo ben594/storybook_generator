@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   imageView: {
     width: 375,
     height: 375,
-    // remove the flex: 1 to maintain the image size
+    flex: 1
   },
   // add styles for your OptionChoices component as needed
 });

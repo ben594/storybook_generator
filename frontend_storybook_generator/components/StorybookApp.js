@@ -25,11 +25,11 @@ const StorybookApp = ( { route, navigation } ) => {
   const [isAddStoryModalVisible, setAddStoryModalVisible] = useState(false);
 
   // function to handle adding a new story
-  const handleAddNewStory = (age, character, setting, year) => {
+  const handleAddNewStory = async (age, character, setting, year) => {
     // axios POST request to backend server to create and save the new story
-    axios.post('https://storybookaiserver.azurewebsites.net/create-story', { username: username, age: age, character: character, setting: setting, year: year })
+    await axios.post('https://storybookaiserver.azurewebsites.net/create-story', { username: username, age: age, mainCharacter: character, setting: setting, year: year })
     .then((response) => {
-      const responseStoryData = response.data.story;
+      const responseStoryData = response.data;
       const storyID = responseStoryData.storyID;
       const texts = responseStoryData.texts;
       const imageURLs = responseStoryData.images;
