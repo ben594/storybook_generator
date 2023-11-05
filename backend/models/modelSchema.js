@@ -28,6 +28,18 @@ const StorySchema = new mongoose.Schema({
     images: {
         type: [String],
         required: true
+    },
+    chatHistory: {
+      type: [
+        {
+          role: {
+            type: String
+          },
+          content: {
+            type: String
+          }
+        }
+      ]
     }
 });
 

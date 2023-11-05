@@ -30,6 +30,7 @@ router.post('/', async (req, res) => {
         // get existing text and images of the story
         const textProgress = story.texts;
         const imageProgress = story.images;
+        const chatHistory = story.chatHistory;
 
         // concatenate all previous text progress to maintain story context
         const concatenatedTextProgress = textProgress.join(" ");

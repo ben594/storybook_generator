@@ -1,9 +1,9 @@
 // StoryIcon.js
 import React from 'react';
-import { Text, TouchableOpacity, StyleSheet, View } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, View, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const StoryIcon = ({ title, onPress, style }) => (
+const StoryIcon = ({ title, onPress, style, imageURL }) => (
   <View style={style}>
     <TouchableOpacity style={styles.storyIcon} onPress={onPress}>
       <View style={styles.book}>
@@ -18,6 +18,11 @@ const StoryIcon = ({ title, onPress, style }) => (
         start={[0, 0]} end={[1, 0]}
         locations={[0.0, 0.2, 0.5]}
         style = {[styles.gradient, {height: '100%', left: 5}]}/>
+
+        <Image
+          style={styles.imageView}
+          source={{ uri: imageURL }}
+        />
 
         <LinearGradient
         colors = {['#3f6d73', 'black']}
@@ -91,7 +96,6 @@ const styles = StyleSheet.create({
     borderLeftRadius: 3,
     borderRightRadius: 3,
   },
-
   title: {
     fontWeight: 'bold', 
     fontSize: 18,
@@ -99,6 +103,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingTop: 20,
   },
+  imageView: {
+    height: width * 0.45,
+    width: width * 0.45
+  }
 });
 
 export default StoryIcon;
