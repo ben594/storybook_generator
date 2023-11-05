@@ -26,30 +26,31 @@ const StorybookApp = ( { route, navigation } ) => {
 
   // function to handle adding a new story
   const handleAddNewStory = (age, character, setting, year) => {
-    // logic to send the new story inputs to the backend or to add it to the local state
-    console.log("Create story pressed");
-    // axios POST request to backend server to save the new story
-    // axios.post('https://storybookaiserver.azurewebsites.net/createStory', { username: username })
-    // .then(response => {
-    //   if (response.data.loginStatus == true) {
-    //       setUsername(state.username); // Update the context value
-    //       navigation.navigate('StoryScreen', { username: username });
-    //   } else {
-    //     // TODO, update state to reflect username not found
-    //     setState({ ...state, loginError: response.data.errorMessage });
-    //   }
-    // })
-    // .catch(error => {
-    //   // Handle exceptions
-    //   setState({ ...state, loginError: error.message });
-    // });
-    setAddStoryModalVisible(false); // hhde the modal after submission
+    // axios POST request to backend server to create and save the new story
+    axios.post('https://storybookaiserver.azurewebsites.net/create-story', { username: username, age: age, character: character, setting: setting, year: year })
+    .then((response) => {
+      const responseStoryData = response.data.story;
+      const storyID = responseStoryData.storyID;
+      const texts = responseStoryData.texts;
+      const imageURLs = responseStoryData.images;
+      navigation.navigate('BookViewerScreen', {
+        username: username,
+        storyID: storyID,
+        texts: texts,
+        imageURLs: imageURLs
+      });
+      setAddStoryModalVisible(false); // hide the modal after submission
+    })
+    .catch(error => {
+      console.error(error);
+      setAddStoryModalVisible(false); // hide the modal after submission
+    });
   };
 
   // run this when this page first renders
   useEffect(() => {
     // call backend api to get list of basic story info
-    axios.get(`https://storybookaiserver.azurewebsites.net/get-stories`, { params: { username: username } })
+    axios.get("https://storybookaiserver.azurewebsites.net/get-stories", { params: { username: username } })
     .then(response => {
       const responseStoryData = response.data.storyInfo;
       let retrievedData = [];
@@ -76,7 +77,7 @@ const StorybookApp = ( { route, navigation } ) => {
   const handlePress = async (storyID) => {
     try {
       // get full story data (text and image urls) from the database
-      const response = await axios.get(`https://storybookaiserver.azurewebsites.net/get-story`, { params: { storyID: storyID } });
+      const response = await axios.get("https://storybookaiserver.azurewebsites.net", { params: { storyID: storyID } });
       const responseStoryData = response.data.story;
       const texts = responseStoryData.texts;
       const imageURLs = responseStoryData.imageURLs;
