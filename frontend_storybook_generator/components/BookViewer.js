@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'Baskerville',
     margin: 20,
+    marginRight: 50,
   },
   imageView: {
     width: 375,

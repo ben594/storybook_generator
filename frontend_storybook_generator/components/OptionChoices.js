@@ -54,9 +54,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#618289',
     padding: 15,
     marginVertical: 5,
+    marginHorizontal: 50,
     justifyContent: 'center',
     alignItems: 'center', 
     borderRadius: 5,
+    position: 'relative',
+    left: -20,
   },
   choiceButtonSelected: {
     backgroundColor: '9DBBBC',
@@ -65,11 +68,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   continueButton: {
-    backgroundColor: 'BAC8C7',
-    padding: 15,
+    backgroundColor: '#BAC8C7', 
+    paddingVertical: 8, 
+    paddingHorizontal: 10, 
     marginTop: 10, 
     borderRadius: 5,
-    alignItems: 'center', 
+    alignSelf: 'center', 
   },
   continueText: {
     color: 'white', 
