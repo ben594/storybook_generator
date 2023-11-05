@@ -141,7 +141,6 @@ const styles = StyleSheet.create({
   storiesContainer: {
     height: 670,
     alignItems: 'center',
-    top: 50
   },
   addStoryButton: {
     position: 'absolute',
