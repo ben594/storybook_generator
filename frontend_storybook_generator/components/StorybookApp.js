@@ -48,10 +48,10 @@ const StorybookApp = ( { route, navigation } ) => {
       const responseStoryData = response.data.story;
 
       const texts = responseStoryData.texts;
-      const images = responseStoryData.images;
+      const imageURLs = responseStoryData.imageURLs;
 
       // navigate to book viewer and pass the username, story id, texts, images
-      navigation.navigate('BookViewerScreen', { username: username, storyID: storyID, texts: texts, images: images });
+      navigation.navigate('BookViewerScreen', { username: username, storyID: storyID, texts: texts, imageURLs: imageURLs });
     })
     .catch(error => {
       console.error(error);

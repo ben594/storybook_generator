@@ -5393,6 +5393,11 @@ react-native-lottie@^0.0.1-alpha.2:
   dependencies:
     react-native-web-lottie "^1.4.4"
 
+react-native-pager-view@5.4.20:
+  version "5.4.20"
+  resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-5.4.20.tgz#04ad87f144bd78b532e462964cec2dcc1d133905"
+  integrity sha512-94i5iwTyrGb6vOkioPJWtT5TVGO8PwGf5nYX9nm6tJKbHXUcrVB3sPWI+CxMctgHbl+wn5+FapabtMjlcB1mPg==
+
 react-native-safe-area-context@^4.7.4:
   version "4.7.4"
   resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-4.7.4.tgz#3dd8438971e70043d76f2428ede75b8a9639265e"
