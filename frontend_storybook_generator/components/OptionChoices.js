@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const OptionChoices = ({ onChoiceSelect }) => {
+const OptionChoices = ({ options, onChoiceSelect }) => {
   // state for continue button
   const [selectedChoice, setSelectedChoice] = useState(null);
 
   // TODO, ADD IN CHOICES FROM PARAGRAPH LIST
-  const choices = [
-    { id: 'choice1', text: 'Go to the castle' },
-    { id: 'choice2', text: 'Search for the key' },
-    { id: 'choice3', text: 'Talk to the wizard' }
-  ];
+  const choices = options.map((option, idx)=>({id: (idx+1).toString(), text: option}));
 
   const handleChoiceSelection = (choiceId) => {
     // set the selected choice state
@@ -21,6 +17,7 @@ const OptionChoices = ({ onChoiceSelect }) => {
     // passed onChoiceSelect function with the selected choice
     onChoiceSelect(selectedChoice);
   };
+  console.log("CHOICES: ")
 
   return (
     <View style={styles.container}>
@@ -36,7 +33,7 @@ const OptionChoices = ({ onChoiceSelect }) => {
           <Text style={styles.choiceText}>{choice.text}</Text>
         </TouchableOpacity>
       ))}
-      {/* TODO: CALL API TO GET MORE IMAGES AND PROMPT */}
+
       {selectedChoice && (
         <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
           <Text style={styles.continueText}>Continue</Text>
@@ -52,8 +49,8 @@ const styles = StyleSheet.create({
   },
   choiceButton: {
     backgroundColor: '#618289',
-    padding: 15,
-    marginVertical: 5,
+    padding: 10,
+    marginVertical: 3,
     marginHorizontal: 50,
     justifyContent: 'center',
     alignItems: 'center', 
@@ -63,12 +60,14 @@ const styles = StyleSheet.create({
   },
   choiceButtonSelected: {
     backgroundColor: '9DBBBC',
+    opacity: 0.4
   },
   choiceText: {
     textAlign: 'center',
+    fontSize: 10,
   },
   continueButton: {
-    backgroundColor: '#BAC8C7', 
+    backgroundColor: '#618289', 
     paddingVertical: 8, 
     paddingHorizontal: 10, 
     marginTop: 10, 
@@ -76,7 +75,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center', 
   },
   continueText: {
-    color: 'white', 
+    color: 'black', 
     fontWeight: 'bold',
   },
 });
