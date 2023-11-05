@@ -60,7 +60,8 @@ const StorybookApp = ( { route, navigation } ) => {
         const story = responseStoryData[i];
         const storyInfo = {
           id: story.storyID,
-          title: story.title
+          title: story.title,
+          imageURL: story.images[0]
         };
 
         retrievedData.push(storyInfo);
@@ -77,7 +78,7 @@ const StorybookApp = ( { route, navigation } ) => {
   const handlePress = async (storyID) => {
     try {
       // get full story data (text and image urls) from the database
-      const response = await axios.get("https://storybookaiserver.azurewebsites.net", { params: { storyID: storyID } });
+      const response = await axios.get("https://storybookaiserver.azurewebsites.net/get-story", { params: { storyID: storyID } });
       const responseStoryData = response.data.story;
       const texts = responseStoryData.texts;
       const imageURLs = responseStoryData.imageURLs;
@@ -110,6 +111,7 @@ const StorybookApp = ( { route, navigation } ) => {
           renderItem={ ({ item }) =>
             <StoryIcon
               title={item.title}
+              // imageURL={item.}
               onPress={() => { 
                 handlePress(item.id)
               }}
@@ -117,8 +119,6 @@ const StorybookApp = ( { route, navigation } ) => {
           }
           keyExtractor={this._keyExtractor}
         />
-
-        {/* Add more StoryIcons as needed */}
       </View>
 
       {/* Navigation Bar */}
