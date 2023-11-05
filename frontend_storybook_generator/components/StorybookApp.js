@@ -37,7 +37,8 @@ const StorybookApp = ( { route, navigation } ) => {
         username: username,
         storyID: storyID,
         texts: texts,
-        imageURLs: imageURLs
+        imageURLs: imageURLs,
+        startPage: 0
       });
       setAddStoryModalVisible(false); // hide the modal after submission
     })
@@ -50,6 +51,7 @@ const StorybookApp = ( { route, navigation } ) => {
   // run this when this page first renders
   useEffect(() => {
     // call backend api to get list of basic story info
+    console.log("username: ", username);
     axios.get("https://storybookaiserver.azurewebsites.net/get-stories", { params: { username: username } })
     .then(response => {
       const responseStoryData = response.data.storyInfo;
@@ -88,7 +90,8 @@ const StorybookApp = ( { route, navigation } ) => {
         username: username,
         storyID: storyID,
         texts: texts,
-        imageURLs: imageURLs
+        imageURLs: imageURLs,
+        startPage: 0
       });
     } catch (error) {
       console.error(error);

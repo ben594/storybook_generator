@@ -11,6 +11,8 @@ import { NativeScreenContainer } from 'react-native-screens';
 import AppLoader from './components/AppLoader';
 import UserProvider from './components/UserContext';
 
+import { LogBox } from 'react-native'; 
+
 async function changeScreenOrientation() {
   await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
 }
@@ -21,6 +23,7 @@ export default function App() {
 
   useEffect(() => {
     changeScreenOrientation();
+    LogBox.ignoreAllLogs(true)
     // simulate a loading process
     setTimeout(() => {
       setIsLoading(false);
