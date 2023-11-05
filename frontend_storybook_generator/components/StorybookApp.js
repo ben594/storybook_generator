@@ -81,7 +81,7 @@ const StorybookApp = ( { route, navigation } ) => {
       </View>
 
       {/* Navigation Bar */}
-      <NavBar />
+      <NavBar navigation={navigation} />
     </SafeAreaView>
   );
 };

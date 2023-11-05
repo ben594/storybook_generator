@@ -3,9 +3,9 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Button from './Button';
 
-const NavBar = () => (
+const NavBar = ({ navigation }) => (
   <View style={styles.navBar}>
-    <Button text={"Home"}/>
+    <Button onPress={() => navigation.goBack()} text={"Signout"}/>
     <Button text={"Search"}/>
     <Button text={"Settings"}/>
   </View>
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    height: 50,
+    height: 20,
   },
 });
 

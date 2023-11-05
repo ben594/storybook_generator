@@ -9,8 +9,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NativeScreenContainer } from 'react-native-screens';
 import AppLoader from './components/AppLoader';
-
-export const UserContext = React.createContext();
+import UserContext from './components/UserContext';
 
 async function changeScreenOrientation() {
   await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);

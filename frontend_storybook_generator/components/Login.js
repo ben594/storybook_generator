@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { SafeAreaView, KeyboardAvoidingView, StyleSheet, View, TextInput, Text, TouchableOpacity, Platform } from 'react-native';
 import axios from 'axios';
 import Button from './Button';
-import { UserContext } from '../App.js';
+import UserContext from './UserContext';
 
 const LoginScreen = ( { navigation } ) => {
     const { setUsername } = useContext(UserContext);
