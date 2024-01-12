@@ -9,15 +9,6 @@ import AddStory from './AddStory';
 import UserProvider, { UserContext } from './UserContext';
 import * as ScreenOrientation from 'expo-screen-orientation';
 
-
-// const username = req.body.username;
-// const title = req.body.title;
-// const age = req.body.age;
-// const mainCharacter = req.body.mainCharacter;
-// const keywords = req.body.keywords;
-// const userPrompt = req.body.prompt;
-
-
 const StorybookApp = ( { route, navigation } ) => {
   const { username } = useContext(UserContext);
   const [storyData, setStoryData] = useState([]);
