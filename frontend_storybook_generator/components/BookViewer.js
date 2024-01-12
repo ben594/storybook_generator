@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, View, Text, Image, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, Image, ScrollView, Animated } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import { useFocusEffect } from '@react-navigation/native';
 import * as ScreenOrientation from 'expo-screen-orientation';
@@ -10,6 +10,8 @@ import axios from 'axios';
 import Button from './Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
+
 const BookViewer = ({ route, navigation }) => {
   const [texts, setTexts] = useState([]);
   const [imageURLs, setImageURLs] = useState([]);
@@ -17,7 +19,6 @@ const BookViewer = ({ route, navigation }) => {
   const [position, setPosition] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [storyID, setStoryID] = useState('');
-  const [dummy, setDummy] = useState(0);
 
   useFocusEffect(
     useCallback(() => {
@@ -83,7 +84,7 @@ const BookViewer = ({ route, navigation }) => {
   }, [pages]);
 
   return (
-      <PagerView
+      <AnimatedPagerView
         style={styles.pagerView}
         initialPage={route.params.startPage}
         onPageScroll={(e) => handlePageScroll(e) }
@@ -145,11 +146,6 @@ const BookViewer = ({ route, navigation }) => {
                           }
 
                           setPages(newPages);
-                          if (dummy == 0) {
-                            setDummy("random thing");
-                          } else {
-                            setDummy(0);
-                          }                      
                         })
                         .catch(error => {
                           console.error(error);
@@ -163,7 +159,7 @@ const BookViewer = ({ route, navigation }) => {
             </View>
           );
         })}
-      </PagerView>
+      </AnimatedPagerView>
   );
 };
 
@@ -181,7 +177,6 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
-    // justifyContent: 'center',
   },
   lastPageTextContainer: {
     flex: 1,
@@ -199,7 +194,6 @@ const styles = StyleSheet.create({
     height: 375,
     flex: 1
   },
-  // add styles for your OptionChoices component as needed
 });
 
 export default BookViewer;
