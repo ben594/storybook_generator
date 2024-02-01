@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const OptionChoices = ({ options, onChoiceSelect }) => {
+const OptionChoices = ({ options, onChoiceSelect, enabled }) => {
   // state for continue button
   const [selectedChoice, setSelectedChoice] = useState(null);
+  const [continueEnabled, setContinueEnabled] = useState(enabled);
 
   // TODO, ADD IN CHOICES FROM PARAGRAPH LIST
   const choices = options.map((option, idx)=>({id: (idx+1).toString(), text: option}));
@@ -16,6 +17,7 @@ const OptionChoices = ({ options, onChoiceSelect }) => {
   const handleContinue = () => {
     // passed onChoiceSelect function with the selected choice
     onChoiceSelect(selectedChoice);
+    setContinueEnabled(false)
   };
 
   return (
@@ -28,12 +30,13 @@ const OptionChoices = ({ options, onChoiceSelect }) => {
             choice.id === selectedChoice && styles.choiceButtonSelected,
           ]}
           onPress={() => handleChoiceSelection(choice.id)}
+          disabled={!enabled}
         >
           <Text style={styles.choiceText}>{choice.text}</Text>
         </TouchableOpacity>
       ))}
 
-      {selectedChoice && (
+      {selectedChoice && continueEnabled && (
         <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
           <Text style={styles.continueText}>Continue</Text>
         </TouchableOpacity>

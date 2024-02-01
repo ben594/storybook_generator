@@ -109,6 +109,7 @@ const BookViewer = ({ route, navigation }) => {
                 {page.options.length > 0 && (
                   <ScrollView>
                   <OptionChoices
+                    enabled={isLastPage}
                     options={page.options}
                     onChoiceSelect={async (choiceId) => {
                       if (isLastPage) {  //request continueStory
