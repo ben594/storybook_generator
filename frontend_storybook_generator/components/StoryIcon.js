@@ -92,7 +92,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: 'bold', 
-    fontSize: 18,
+    fontFamily: 'Cochin',
+    fontSize: 20,
     color: '#000',
     textAlign: 'center',
     paddingTop: 20,
