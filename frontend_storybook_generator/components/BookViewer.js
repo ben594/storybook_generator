@@ -186,8 +186,10 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start', // align text to the top for the last page
   },
   textView: {
-    fontSize: 15,
-    fontFamily: 'Baskerville',
+    fontSize: 16,
+    // fontFamily: 'Baskerville',
+    fontFamily: 'Cochin',
+    // fontFamily: 'Palatino',
     marginTop: 20,
     margin: 10,
     marginRight: 50,

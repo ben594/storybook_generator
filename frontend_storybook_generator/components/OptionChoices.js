@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   choiceButton: {
-    backgroundColor: '#618289',
+    // backgroundColor: '#618289',
+    backgroundColor: '#dba98a',
     padding: 10,
     marginVertical: 3,
     marginHorizontal: 50,
@@ -58,15 +59,18 @@ const styles = StyleSheet.create({
     left: -20,
   },
   choiceButtonSelected: {
-    backgroundColor: '9DBBBC',
+    // backgroundColor: '9DBBBC',
+    backgroundColor: '#baa191',
     opacity: 0.4
   },
   choiceText: {
     textAlign: 'center',
     fontSize: 10,
+    fontFamily: 'Cochin',
   },
   continueButton: {
-    backgroundColor: '#618289', 
+    // backgroundColor: '#618289', 
+    backgroundColor: '#dba98a', 
     paddingVertical: 8, 
     paddingHorizontal: 10, 
     marginTop: 10, 
@@ -76,6 +80,7 @@ const styles = StyleSheet.create({
   continueText: {
     color: 'black', 
     fontWeight: 'bold',
+    fontFamily: 'Cochin',
   },
 });
 
