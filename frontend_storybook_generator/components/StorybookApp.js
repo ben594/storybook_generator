@@ -92,7 +92,7 @@ const StorybookApp = ( { route, navigation } ) => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Story icons */}
-      <Text style={styles.logo}> StoryBook </Text>
+      <Text style={styles.logo}> Aesop AI </Text>
       <CircularButton style={styles.addStoryButton} onPress={() => setAddStoryModalVisible(true)} />
       <AddStory
         isVisible={isAddStoryModalVisible}
