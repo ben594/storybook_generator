@@ -118,7 +118,7 @@ async function getChatResponse(age, mainCharacter, setting, year, userPrompt) {
     // get title and story
     const storyCompletion = await openai.chat.completions.create({
         messages: [{role: "user", content: chatPrompt }],
-        model: "gpt-3.5-turbo-1106",
+        model: "gpt-3.5-turbo",
     });
     const storyResponse = storyCompletion.choices[0].message.content;
     console.log("Received story response: ", storyResponse);
@@ -136,10 +136,10 @@ async function getDalleResponse(description) {
     Create a text-free and scenic image using the style of Studio Ghibli of the following story: ${description}
     `;
     const image = await openai.images.generate({
-        model: "dall-e-2",
+        model: "dall-e-3",
         prompt: prompt,
         n: 1,
-        size: "256x256",
+        size: "1024x1024",
     });
     console.log("Received image url: ", image.data[0].url);
     const imageURL = image.data[0].url;

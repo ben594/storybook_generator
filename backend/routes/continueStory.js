@@ -104,9 +104,10 @@ async function getDalleResponse(description) {
     Create a word-free, scenic, and artistic image using the style of Studio Ghibli of the following story: ${description}
     `;
     const image = await openai.images.generate({
+        model: 'dall-e-3',
         prompt: prompt,
         n: 1,
-        size: "256x256",
+        size: "1024x1024",
     });
     console.log("Received image url: ", image.data[0].url);
     const imageURL = image.data[0].url;
