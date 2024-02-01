@@ -100,6 +100,10 @@ const BookViewer = ({ route, navigation }) => {
 
           return (
             <View key={`${page.pageNumber}`} style={styles.page}>
+              <Image
+                style={styles.backgroundImage}
+                source={require('../assets/image_bg.jpg')}
+              />
               <Image style={styles.imageView} source={{ uri: page.imageURL }} />
               <View style={isLastPage ? styles.lastPageTextContainer : styles.textContainer}>
                 <Text style={styles.textView}>{page.text}</Text>
@@ -193,6 +197,11 @@ const styles = StyleSheet.create({
   imageView: {
     width: 375,
     height: 375,
+    flex: 1
+  },
+  backgroundImage: {
+    width: 400,
+    height: 400,
     flex: 1
   },
 });

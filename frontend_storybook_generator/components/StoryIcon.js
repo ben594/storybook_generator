@@ -9,12 +9,14 @@ const StoryIcon = ({ title, onPress, imageURL }) => (
       <View style={styles.book}>
         <View style={styles.spine}/>
         <LinearGradient
-        colors = {['#3f6d73', 'black', '#3f6d73', '#6b95a0', '#3f6d73']}
+        // colors = {['#3f6d73', 'black', '#3f6d73', '#6b95a0', '#3f6d73']}
+        colors = {['#8a3c1a', 'black', '#8a3c1a', '#b55c35', '#8a3c1a']}
         start={[0, 0]} end={[1, 0]}
         locations={[0.0, 0.2, 0.3, 0.5, 1]}
         style = {[styles.gradient, {width: 30}]}/>
         <LinearGradient
-        colors = {['#3f6d73', '#6b95a0','#3f6d73']}
+        // colors = {['#3f6d73', '#6b95a0','#3f6d73']}
+        colors = {['#8a3c1a', '#b55c35','#8a3c1a']}
         start={[0, 0]} end={[1, 0]}
         locations={[0.0, 0.2, 0.5]}
         style = {[styles.gradient, {height: '100%', left: 5}]}/>
@@ -25,7 +27,8 @@ const StoryIcon = ({ title, onPress, imageURL }) => (
         />
 
         <LinearGradient
-        colors = {['#3f6d73', 'black']}
+        // colors = {['#3f6d73', 'black']}
+        colors = {['#8a3c1a', 'black']}
         start={[0, 0]} end={[1, 0]}
         locations={[0.2, 1]}
         style = {[styles.gradient, {height: '100%', width: 10, left: 110, position: 'absolute', borderTopLeftRadius: 0,
@@ -51,7 +54,8 @@ const styles = StyleSheet.create({
   book: {
     width: width * 0.6,
     height: width * 0.9,
-    backgroundColor: '#3f6d73', // Cartoonish book cover color
+    backgroundColor: '#8a3c1a', // Cartoonish book cover color
+    // backgroundColor: '#3f6d73', // Cartoonish book cover color
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
 
@@ -69,7 +73,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 20,
     height: '95%',
-    backgroundColor: '#3f6d73', // Spine color
+    // backgroundColor: '#3f6d73', // Spine color
+    backgroundColor: '#8a3c1a', // Spine color
     left: -10, // Adjust the position to simulate the book's depth
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
@@ -95,8 +100,8 @@ const styles = StyleSheet.create({
   },
   imageView: {
     height: width * 0.75,
-    width: '100%'
-  }
+    width: '70%'
+  },
 });
 
 export default StoryIcon;
