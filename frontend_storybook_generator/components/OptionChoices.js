@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import LottieView from 'lottie-react-native';
 
-const OptionChoices = ({ options, onChoiceSelect, enabled }) => {
+const OptionChoices = ({ options, onChoiceSelect, enabled, isLastPage, isLoading }) => {
   // state for continue button
   const [selectedChoice, setSelectedChoice] = useState(null);
   const [continueEnabled, setContinueEnabled] = useState(enabled);
@@ -36,10 +37,18 @@ const OptionChoices = ({ options, onChoiceSelect, enabled }) => {
         </TouchableOpacity>
       ))}
 
+      {/* Continue button */}
       {selectedChoice && continueEnabled && (
         <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
           <Text style={styles.continueText}>Continue</Text>
         </TouchableOpacity>
+      )}
+
+      {/* Loading view */}
+      {isLoading && isLastPage && (
+        <View style={styles.loadingView}>
+          <LottieView source={ require('../assets/loading.json')} autoPlay loop style={styles.lottie}/>
+        </View>
       )}
     </View>
   );
@@ -84,6 +93,13 @@ const styles = StyleSheet.create({
     color: 'black', 
     fontWeight: 'bold',
     fontFamily: 'Cochin',
+  },
+  loadingView: {
+    alignSelf: 'center', 
+  },
+  lottie: {
+    height: 75,
+    width: 75,
   },
 });
 

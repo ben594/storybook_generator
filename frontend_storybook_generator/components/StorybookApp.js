@@ -8,6 +8,7 @@ import axios from 'axios';
 import AddStory from './AddStory';
 import UserProvider, { UserContext } from './UserContext';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import { REACT_APP_BACKEND_URL } from './BackendURL';
 
 const StorybookApp = ( { route, navigation } ) => {
   const { username } = useContext(UserContext);
@@ -18,7 +19,7 @@ const StorybookApp = ( { route, navigation } ) => {
   // function to handle adding a new story
   const handleAddNewStory = async (age, character, setting, year) => {
     // axios POST request to backend server to create and save the new story
-    await axios.post('https://storybookaiserver.azurewebsites.net/create-story', { username: username, age: age, mainCharacter: character, setting: setting, year: year })
+    await axios.post(`${REACT_APP_BACKEND_URL}/create-story`, { username: username, age: age, mainCharacter: character, setting: setting, year: year })
     .then((response) => {
       const responseStoryData = response.data;
       const storyID = responseStoryData.storyID;
@@ -43,7 +44,7 @@ const StorybookApp = ( { route, navigation } ) => {
   useEffect(() => {
     // call backend api to get list of basic story info
     console.log("username: ", username);
-    axios.get("https://storybookaiserver.azurewebsites.net/get-stories", { params: { username: username } })
+    axios.get(`${REACT_APP_BACKEND_URL}/get-stories`, { params: { username: username } })
     .then(response => {
       const responseStoryData = response.data.storyInfo;
       let retrievedData = [];
@@ -71,7 +72,7 @@ const StorybookApp = ( { route, navigation } ) => {
   const handlePress = async (storyID) => {
     try {
       // get full story data (text and image urls) from the database
-      const response = await axios.get("https://storybookaiserver.azurewebsites.net/get-story", { params: { storyID: storyID } });
+      const response = await axios.get(`${REACT_APP_BACKEND_URL}/get-story`, { params: { storyID: storyID } });
       const responseStoryData = response.data.story;
       const texts = responseStoryData.texts;
       const imageURLs = responseStoryData.imageURLs;

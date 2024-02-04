@@ -29,7 +29,6 @@ createStoryRoute.post('/', async (req, res) => {
         // create story document in the database
         // get user input from request
         const username = req.body.username;
-        console.log('username: ', username)
         const age = req.body.age;
         const mainCharacter = req.body.mainCharacter;
         const setting = req.body.setting;

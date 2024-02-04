@@ -4,11 +4,10 @@ import PagerView from 'react-native-pager-view';
 import { useFocusEffect } from '@react-navigation/native';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import * as Speech from 'expo-speech';
-import OptionChoices from './OptionChoices';
 import axios from 'axios';
 
-import Button from './Button';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import OptionChoices from './OptionChoices';
+import { REACT_APP_BACKEND_URL } from './BackendURL';
 
 const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
 
@@ -19,6 +18,7 @@ const BookViewer = ({ route, navigation }) => {
   const [position, setPosition] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [storyID, setStoryID] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -110,13 +110,15 @@ const BookViewer = ({ route, navigation }) => {
                   <ScrollView>
                   <OptionChoices
                     enabled={isLastPage}
+                    isLoading={isLoading}
+                    isLastPage={isLastPage}
                     options={page.options}
                     onChoiceSelect={async (choiceId) => {
                       if (isLastPage) {  //request continueStory
                         console.log(`User selected: ${choiceId}`);
-
+                        setIsLoading(true);
                         // make post request to continue story
-                        axios.post('https://storybookaiserver.azurewebsites.net/continue-story', { storyID: storyID, option: choiceId })
+                        axios.post(`${REACT_APP_BACKEND_URL}/continue-story`, { storyID: storyID, option: choiceId })
                         .then((response) => {
                           console.log("response.data: ", response.data);
                           const responseStoryData = response.data;
@@ -150,6 +152,7 @@ const BookViewer = ({ route, navigation }) => {
                           }
 
                           setPages(newPages);
+                          setIsLoading(false);
                         })
                         .catch(error => {
                           console.error(error);

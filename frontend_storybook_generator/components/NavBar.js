@@ -13,7 +13,6 @@ const NavBar = ({ navigation }) => (
 
 const styles = StyleSheet.create({
   navBar: {
-    // alignSelf: 'end',
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',

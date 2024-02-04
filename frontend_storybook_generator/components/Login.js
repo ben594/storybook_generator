@@ -3,6 +3,7 @@ import { SafeAreaView, KeyboardAvoidingView, StyleSheet, View, TextInput, Text, 
 import axios from 'axios';
 import Button from './Button';
 import UserProvider, { UserContext } from './UserContext';
+import { REACT_APP_BACKEND_URL } from './BackendURL';
 
 const LoginScreen = ( { navigation } ) => {
   const { setUsername } = useContext(UserContext);
@@ -12,11 +13,11 @@ const LoginScreen = ( { navigation } ) => {
   });
 
   const onPressLogin = () => {
-      axios.post("https://storybookaiserver.azurewebsites.net/login", { username: state.username })
+      axios.post(`${REACT_APP_BACKEND_URL}/login`, { username: state.username })
         .then(response => {
           if (response.data.loginStatus == true) {
               setUsername(state.username); // Update the context value
-              navigation.navigate('StoryScreen', { username: state.username });
+              navigation.navigate('HomeScreen', { username: state.username });
           } else {
             // TODO, update state to reflect username not found
             setState({ ...state, loginError: response.data.errorMessage });
@@ -39,7 +40,7 @@ const LoginScreen = ( { navigation } ) => {
       return;
     }
   
-    axios.post("https://storybookaiserver.azurewebsites.net/create-User", {
+    axios.post(`${REACT_APP_BACKEND_URL}/create-User`, {
       username: state.username,
     })
     .then(response => {

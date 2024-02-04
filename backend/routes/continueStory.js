@@ -114,36 +114,6 @@ async function getDalleResponse(description) {
     return imageURL;
 }
 
-// async function getAndStoreImage(imageURL, storyID) {
-//     try {
-//         // get image from dalle image URL
-//         const imageResponse = await axios.get(imageURL, { responseType: 'arraybuffer' });
-//         if (imageResponse.status !== 200) {
-//             console.error('Unable to get image from the DALL-E URL.');
-//             return;
-//         }
-
-//         // create unique name for the image to be stored in azure
-//         const imageID = uuidv4();
-//         const blobName = `${storyID}_${imageID}.png`;
-
-//         // azure client
-//         const containerClient = BlobServiceClient.getContainerClient(containerName);
-//         const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-//         const hostedImageURL = blockBlobClient.url;
-
-//         // upload image to azure
-//         const imageBuffer = Buffer.from(imageResponse.data);
-//         await blockBlobClient.upload(imageBuffer, imageBuffer.length);
-
-//         console.log(`Image "${blobName}" uploaded to Azure.`);
-
-//         return hostedImageURL;
-//     } catch (err) {
-//         console.error(err);
-//     }
-// }
-
 const parseResponse = (res) => {
     res = res.split('\n')
     res = res.filter((para) => (para.length > 5))
