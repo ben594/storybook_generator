@@ -4,14 +4,18 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import StorybookApp from './components/StorybookApp';
 import LoginScreen from './components/Login';
-import BookViewer from './components/BookViewer';
+import BookViewer from './components/book_viewer/BookViewer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NativeScreenContainer } from 'react-native-screens';
-import AppLoader from './components/AppLoader';
-import UserProvider from './components/UserContext';
-
 import { LogBox } from 'react-native'; 
+
+import UserProvider from './components/UserContext';
+import TabNavigator from './components/TabNavigator';
+import SubjectScreen from './components/learn/SubjectScreen';
+
+const Tab = createBottomTabNavigator();
 
 async function changeScreenOrientation() {
   await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
@@ -19,37 +23,38 @@ async function changeScreenOrientation() {
 
 export default function App() {
   const [username, setUsername] = useState(null); 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     changeScreenOrientation();
     LogBox.ignoreAllLogs(true)
-    // simulate a loading process
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000); // 3 seconds
   }, []);
 
 
   const Stack = createNativeStackNavigator();
 
-  if (isLoading) {
-    return <AppLoader />;
-  }
-
   return (
     <UserProvider>
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='LoginScreen'>
-        <Stack.Screen name='LoginScreen' component={LoginScreen} options={{ headerShown: false }}/>
-        <Stack.Screen 
-          name='StoryScreen' 
-          component={StorybookApp} 
+      <Stack.Navigator initialRouteName='LoginScreen' screenOptions={{ gestureEnabled: false }}>
+        <Stack.Screen
+          name='LoginScreen'
+          component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="HomeScreen"
+          component={TabNavigator}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name='BookViewerScreen'
           component={BookViewer}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='SubjectScreen'
+          component={SubjectScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

@@ -47,7 +47,7 @@ const OptionChoices = ({ options, onChoiceSelect, enabled, isLastPage, isLoading
       {/* Loading view */}
       {isLoading && isLastPage && (
         <View style={styles.loadingView}>
-          <LottieView source={ require('../assets/loading.json')} autoPlay loop style={styles.lottie}/>
+          <LottieView source={ require('../../assets/loading.json')} autoPlay loop style={styles.lottie}/>
         </View>
       )}
     </View>

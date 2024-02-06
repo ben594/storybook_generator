@@ -1,8 +1,8 @@
 // StorybookApp.js
 import React, { useState, useEffect, useContext } from 'react';
 import { TextInput, Button, View, StyleSheet, FlatList, Text, SafeAreaView } from 'react-native';
-import StoryIcon from './StoryIcon'; 
-import NavBar from './NavBar'; 
+import StoryIcon from './StoryIcon';
+import NavBar from './NavBar';
 import CircularButton from './CircularButton';
 import axios from 'axios';
 import AddStory from './AddStory';
@@ -10,7 +10,7 @@ import UserProvider, { UserContext } from './UserContext';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { REACT_APP_BACKEND_URL } from './BackendURL';
 
-const StorybookApp = ( { route, navigation } ) => {
+const StorybookApp = ({ route, navigation }) => {
   const { username } = useContext(UserContext);
   const [storyData, setStoryData] = useState([]);
   // construct a modal for adding new stories
@@ -20,52 +20,51 @@ const StorybookApp = ( { route, navigation } ) => {
   const handleAddNewStory = async (age, character, setting, year) => {
     // axios POST request to backend server to create and save the new story
     await axios.post(`${REACT_APP_BACKEND_URL}/create-story`, { username: username, age: age, mainCharacter: character, setting: setting, year: year })
-    .then((response) => {
-      const responseStoryData = response.data;
-      const storyID = responseStoryData.storyID;
-      const texts = responseStoryData.texts;
-      const imageURLs = responseStoryData.images;
-      navigation.navigate('BookViewerScreen', {
-        username: username,
-        storyID: storyID,
-        texts: texts,
-        imageURLs: imageURLs,
-        startPage: 0
+      .then((response) => {
+        const responseStoryData = response.data;
+        const storyID = responseStoryData.storyID;
+        const texts = responseStoryData.texts;
+        const imageURLs = responseStoryData.images;
+        navigation.navigate('BookViewerScreen', {
+          username: username,
+          storyID: storyID,
+          texts: texts,
+          imageURLs: imageURLs,
+          startPage: 0
+        });
+        setAddStoryModalVisible(false); // hide the modal after submission
+      })
+      .catch(error => {
+        console.error(error);
+        setAddStoryModalVisible(false); // hide the modal after submission
       });
-      setAddStoryModalVisible(false); // hide the modal after submission
-    })
-    .catch(error => {
-      console.error(error);
-      setAddStoryModalVisible(false); // hide the modal after submission
-    });
   };
 
   // run this when this page first renders
   useEffect(() => {
     // call backend api to get list of basic story info
-    console.log("username: ", username);
     axios.get(`${REACT_APP_BACKEND_URL}/get-stories`, { params: { username: username } })
-    .then(response => {
-      const responseStoryData = response.data.storyInfo;
-      let retrievedData = [];
+      .then(response => {
+        const responseStoryData = response.data.storyInfo;
+        let retrievedData = [];
 
-      // loop through response data to get ids and titles of stories
-      for (var i = 0; i < responseStoryData.length; i++) {
-        const story = responseStoryData[i];
-        const storyInfo = {
-          id: story.storyID,
-          title: story.title,
-          imageURL: story.thumbnailURL
-        };
+        // loop through response data to get ids and titles of stories
+        for (var i = 0; i < responseStoryData.length; i++) {
+          const story = responseStoryData[i];
+          const storyInfo = {
+            id: story.storyID,
+            title: story.title,
+            imageURL: story.thumbnailURL
+          };
 
-        retrievedData.push(storyInfo);
-      }
+          retrievedData.push(storyInfo);
+        }
 
-      setStoryData(retrievedData);
-    })
-    .catch(error => {
-      console.error(error);
-    });
+        setStoryData(retrievedData);
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }, []);
 
   // Function to handle story icon press
@@ -76,7 +75,7 @@ const StorybookApp = ( { route, navigation } ) => {
       const responseStoryData = response.data.story;
       const texts = responseStoryData.texts;
       const imageURLs = responseStoryData.imageURLs;
-  
+
       // Navigate to book viewer and pass the username, story id, texts, images
       navigation.navigate('BookViewerScreen', {
         username: username,
@@ -103,11 +102,11 @@ const StorybookApp = ( { route, navigation } ) => {
       <View style={styles.storiesContainer}>
         <FlatList style={styles.FlatlistStyles} data={storyData}
           numColumns={2}
-          renderItem={ ({ item }) =>
+          renderItem={({ item }) =>
             <StoryIcon
               title={item.title}
               imageURL={item.imageURL}
-              onPress={() => { 
+              onPress={() => {
                 handlePress(item.id)
               }}
             />

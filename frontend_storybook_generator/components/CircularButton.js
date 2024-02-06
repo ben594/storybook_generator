@@ -1,4 +1,3 @@
-// CircularButton.js
 import React from 'react';
 import { Text, TouchableOpacity, StyleSheet, View } from 'react-native';
 import {AntDesign} from '@expo/vector-icons'
