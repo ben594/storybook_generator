@@ -47,29 +47,22 @@ createStoryRoute.post('/', async (req, res) => {
         console.log("chatResponse: ", chatResponse)
 
         // generate new story id
-        const storyID = uuidv4(); 
+        const storyID = uuidv4();
 
-        let hostedImageURLs = []
+        let hostedImageURLs = [];
         for (const text of chatResponse.parsedResponse.texts) {
             if (!text.toLowerCase().startsWith("option")) {
-                let description = text
-                let imageURL = await getDalleResponse(description)
+                let description = text;
+                let imageURL = await getDalleResponse(description);
                 let hostedImageURL = await getAndStoreImage(imageURL, storyID);
-                console.log("HOSTEDIMAGEURL: ", hostedImageURL)
-                hostedImageURLs.push(hostedImageURL)
-                console.log("HOSTEDIMAGEURLs: ", hostedImageURLs)
+                hostedImageURLs.push(hostedImageURL);
             }
         }
 
-
-        console.log("FINISHED WAITING!!!\n\n\n\n")
-
- 
-
         // add story to database
-        const newStory = new Story({ 
-            storyID: storyID, 
-            title: chatResponse.parsedResponse.title, 
+        const newStory = new Story({
+            storyID: storyID,
+            title: chatResponse.parsedResponse.title,
             texts: chatResponse.parsedResponse.texts,
             chatHistory: chatResponse.chatHistory,
             images: hostedImageURLs
@@ -116,21 +109,20 @@ async function getChatResponse(age, mainCharacter, setting, year, userPrompt) {
 
     // get title and story
     const storyCompletion = await openai.chat.completions.create({
-        messages: [{role: "user", content: chatPrompt }],
+        messages: [{ role: "user", content: chatPrompt }],
         model: "gpt-3.5-turbo",
     });
     const storyResponse = storyCompletion.choices[0].message.content;
     console.log("Received story response: ", storyResponse);
 
 
-    //chathistory: [{role, content}]
-    //parsedResponse: {texts: [String], title}
+    // chathistory: [{role, content}]
+    // parsedResponse: {texts: [String], title}
 
-    return {chatHistory: [{role: 'user', content: chatPrompt}, {role: 'assistant', content: storyResponse}], parsedResponse: parseResponse(storyResponse)};
+    return { chatHistory: [{ role: 'user', content: chatPrompt }, { role: 'assistant', content: storyResponse }], parsedResponse: parseResponse(storyResponse) };
 }
 
 async function getDalleResponse(description) {
-    // TODO: include style in the prompt
     const prompt = `
     Create a text-free and scenic image using the style of Studio Ghibli of the following story: ${description}
     `;
@@ -175,7 +167,6 @@ async function getAndStoreImage(imageURL, storyID) {
     }
 }
 
-
 const parseResponse = (res) => {
     res = res.split('\n')
     res = res.filter((para) => (para.length > 5))
@@ -196,7 +187,10 @@ const parseResponse = (res) => {
             }
         }
     }
-    return {texts: res, title: title}
+
+    console.log("parse response: ", res)
+
+    return { texts: res, title: title }
 }
 
 module.exports = { createStoryRoute, getAndStoreImage };

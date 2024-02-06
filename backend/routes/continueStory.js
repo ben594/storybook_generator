@@ -69,17 +69,17 @@ router.post('/', async (req, res) => {
 });
 
 async function continueChatResponse(pastChatHistory, lenTexts, optionChoice) {
-    const chatPrompt = lenTexts>30 ? 
+    const chatPrompt = lenTexts > 30 ? 
     `
     ${optionChoice}
 
-    Please end the story after this choice with a smooth ending. Display [END] at the end of the story. Do not display the option at the beginning, just display the story. Keep the response under 200 words please.
+    Please end the story after this choice with a smooth ending. Display [END] at the end of the story. Do not display the options at the beginning, just display the story. Keep the response under 200 words please.
     `
     :
     `
     ${optionChoice}
 
-    Please continue the story with the provided option. Do not display the option at the beginning, just display the story. Keep the response under 200 words please.
+    Please continue the story with the provided option. Do not display the options at the beginning, just display the story. Keep the response under 200 words please.
     `
 
     let chatHistory = pastChatHistory.concat([{role: 'user', content: chatPrompt}])
@@ -97,9 +97,7 @@ async function continueChatResponse(pastChatHistory, lenTexts, optionChoice) {
     return {chatHistory, parsedResponse: parseResponse(storyResponse)};
 }
 
-
 async function getDalleResponse(description) {
-    // TODO: include style in the prompt
     const prompt = `
     Create a word-free, scenic, and artistic image using the style of Studio Ghibli of the following story: ${description}
     `;
@@ -117,8 +115,6 @@ async function getDalleResponse(description) {
 const parseResponse = (res) => {
     res = res.split('\n')
     res = res.filter((para) => (para.length > 5))
-    // const paragraphs =  res.filter((para) => !para.toLowerCase().startsWith("option"))
-    // const options =  res.filter((para) => para.toLowerCase().startsWith("option"))
 
     title = res[0].split(': ')[1]
     res = res.slice(1)

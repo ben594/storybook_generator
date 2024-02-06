@@ -33,8 +33,8 @@ const BookViewer = ({ route, navigation }) => {
       lockOrientation();
 
       // Function to unlock the orientation when the component is unmounted or loses focus
-      return () => {
-        ScreenOrientation.unlockAsync();
+      return async () => {
+        await ScreenOrientation.unlockAsync();
       };
     }, [])
   );
@@ -48,7 +48,6 @@ const BookViewer = ({ route, navigation }) => {
   }, []);
 
   useEffect(() => {
-    console.log("trigger create new pages");
     var newPages = [];
     let imgCnt = 0;
     for (var i = 0; i < route.params.texts.length; i++) {

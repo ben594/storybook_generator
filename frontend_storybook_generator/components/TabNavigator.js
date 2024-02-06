@@ -10,22 +10,6 @@ import LearnScreen from './learn/LearnScreen';
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
-  useFocusEffect(
-    useCallback(() => {
-      // Function to lock the orientation
-      const lockOrientation = async () => {
-        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
-      };
-
-      lockOrientation();
-
-      // Function to unlock the orientation when the component is unmounted or loses focus
-      return () => {
-        ScreenOrientation.unlockAsync();
-      };
-    }, [])
-  );
-
   return (
     <Tab.Navigator
       screenOptions={() => ({
