@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { TextInput, Button, View, StyleSheet, FlatList, Text, SafeAreaView } from 'react-native';
+import { TouchableOpacity, Button, View, StyleSheet, FlatList, Text, SafeAreaView } from 'react-native';
+import axios from 'axios';
+
+
 import StoryIcon from '../StoryIcon';
 import NavBar from '../NavBar';
-import CircularButton from '../CircularButton';
-import axios from 'axios';
+import BackButton from '../common/BackButton';
 import AddStory from '../AddStory';
 import UserProvider, { UserContext } from '../UserContext';
 import * as ScreenOrientation from 'expo-screen-orientation';
@@ -59,22 +61,44 @@ const SubjectScreen = ({ route, navigation }) => {
       });
   };
 
-  const bannersData = [
-    { title: 'Science', color: '#5a8896', description: 'This banner is about science.' },
-    { title: 'History', color: '#FF6969', description: 'This banner is about history.' },
-    { title: 'Geography', color: '#99A98F', description: 'This banner is about geography.' },
+  const returnToLearnScreen = () => {
+    navigation.navigate('Learn');
+  };
+
+  const topicData = [
+    'Age of Dinosaurs',
+    'Ancient Egypt',
+    'Ancient Rome',
+    'The Revolutionary War',
+    'Medieval Ages',
+    'Mesopotamia'
   ];
 
   return (
     <SafeAreaView style={styles.container}>
       {/* Story icons */}
       <Text style={styles.logo}> Aesop AI </Text>
-      <View style={styles.subjectContainer}>
-        <Text>{subject}</Text>
+      <BackButton style={styles.backButton} onPress={returnToLearnScreen} />
+      <View style={styles.topicContainer}>
+        <FlatList 
+          // style={[styles.topicList]}
+          data={topicData}
+          numColumns={2}
+          renderItem={({ item }) =>
+            <TouchableOpacity style={styles.topicIcon}>
+              <Text>
+                {item}
+              </Text>
+            </TouchableOpacity>
+          }
+          keyExtractor={this._keyExtractor}
+        />
       </View>
-
-      {/* Navigation Bar */}
-      <NavBar navigation={navigation} />
+      <TouchableOpacity>
+        <Text>
+          Create Story
+        </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -85,19 +109,31 @@ const styles = StyleSheet.create({
     backgroundColor: '#ead8ca',
     justifyContent: 'space-between',
   },
-  subjectList: {
-    width: '90%',
-  },
   logo: {
     alignSelf: 'center',
     fontWeight: 'bold',
     fontSize: 25,
   },
-  subjectContainer: {
+  topicContainer: {
+    flex: 1,
     height: '90%',
-    width: '100%',
     alignItems: 'center',
   },
+  backButton: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
+  },
+  topicIcon: {
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 20,
+    marginHorizontal: '5%',
+    borderRadius: 10,
+    height: 100,
+    width: '40%',
+  }
 });
 
 export default SubjectScreen;

@@ -27,7 +27,7 @@ const SubjectBanner = ({ navigation, title, description, color }) => {
           <Text style={styles.description}>{description}</Text>
           <TouchableOpacity style={styles.visitSubjectButton} onPress={visitSubject}>
             <Text style={styles.visitSubjectButtonText}>
-              Explore {title}!
+              Explore {title}
             </Text>
           </TouchableOpacity>
         </View>
@@ -58,10 +58,10 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 24,
     color: '#ffffff',
-    padding: 10,
+    padding: 20,
   },
   descriptionView: {
-    height: 150,
+    height: 200,
     alignItems: 'center',
   },
   visitSubjectButton: {
@@ -74,7 +74,8 @@ const styles = StyleSheet.create({
   visitSubjectButtonText: {
     fontSize: 20,
     fontWeight: 'bold',
-    padding: 20,
+    padding: 10,
+    color: 'black',
   }
 });
 

@@ -7,7 +7,7 @@ import * as Speech from 'expo-speech';
 import axios from 'axios';
 
 import OptionChoices from './OptionChoices';
-import CircularButton from '../CircularButton';
+import CircularButton from '../common/CircularButton';
 import BookViewerTopBar from './BookViewerTopBar';
 import { REACT_APP_BACKEND_URL } from '../BackendURL';
 
@@ -108,7 +108,6 @@ const BookViewer = ({ route, navigation }) => {
           return (
             <TouchableOpacity onPress={handleTapAnywhere} activeOpacity={0.9}>
               <View key={`${page.pageNumber}`} style={styles.page}>
-                {/* <CircularButton style={styles.returnToLibraryButton} onPress={() => returnToLibrary()} /> */}
                 {topBarVisible && <BookViewerTopBar topBarVisible={topBarVisible} navigation={navigation} />}
                 <Image
                   style={styles.imageView}

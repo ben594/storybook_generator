@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { TextInput, Button, View, StyleSheet, FlatList, Text, SafeAreaView } from 'react-native';
 import StoryIcon from './StoryIcon';
 import NavBar from './NavBar';
-import CircularButton from './CircularButton';
+import CircularButton from './common/CircularButton';
 import axios from 'axios';
 import AddStory from './AddStory';
 import UserProvider, { UserContext } from './UserContext';

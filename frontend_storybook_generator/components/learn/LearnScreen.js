@@ -30,9 +30,9 @@ const LearnScreen = ({ route, navigation }) => {
   );
 
   const bannersData = [
-    { title: 'Science', color: '#5a8896', description: 'This banner is about science.' },
-    { title: 'History', color: '#FF6969', description: 'This banner is about history.' },
-    { title: 'Geography', color: '#99A98F', description: 'This banner is about geography.' },
+    { title: 'Science', color: '#5a8896', description: 'Discover how the universe around us works!' },
+    { title: 'History', color: '#FF6969', description: 'Learn about the civilizations, people, and events that shaped the world!' },
+    { title: 'Geography', color: '#99A98F', description: 'Travel the world to visit cities and natural wonders!' },
   ];
 
   return (
