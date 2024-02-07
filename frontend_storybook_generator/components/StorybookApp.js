@@ -1,5 +1,5 @@
 // StorybookApp.js
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { TextInput, Button, View, StyleSheet, FlatList, Text, SafeAreaView } from 'react-native';
 import StoryIcon from './StoryIcon';
 import NavBar from './NavBar';
@@ -8,6 +8,7 @@ import axios from 'axios';
 import AddStory from './AddStory';
 import UserProvider, { UserContext } from './UserContext';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import { useFocusEffect } from '@react-navigation/native';
 import { REACT_APP_BACKEND_URL } from './BackendURL';
 
 const StorybookApp = ({ route, navigation }) => {
@@ -39,6 +40,35 @@ const StorybookApp = ({ route, navigation }) => {
         setAddStoryModalVisible(false); // hide the modal after submission
       });
   };
+
+  // get possible new books after creation
+  useFocusEffect(
+    useCallback(() => {
+      // call backend api to get list of basic story info
+      axios.get(`${REACT_APP_BACKEND_URL}/get-stories`, { params: { username: username } })
+        .then(response => {
+          const responseStoryData = response.data.storyInfo;
+          let retrievedData = [];
+
+          // loop through response data to get ids and titles of stories
+          for (var i = 0; i < responseStoryData.length; i++) {
+            const story = responseStoryData[i];
+            const storyInfo = {
+              id: story.storyID,
+              title: story.title,
+              imageURL: story.thumbnailURL
+            };
+
+            retrievedData.push(storyInfo);
+          }
+
+          setStoryData(retrievedData);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }, [])
+  );
 
   // run this when this page first renders
   useEffect(() => {
@@ -114,9 +144,6 @@ const StorybookApp = ({ route, navigation }) => {
           keyExtractor={this._keyExtractor}
         />
       </View>
-
-      {/* Navigation Bar */}
-      <NavBar navigation={navigation} />
     </SafeAreaView>
   );
 };
@@ -125,7 +152,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ead8ca',
-    justifyContent: 'space-between',
+    marginBottom: 80,
+    flexGrow: 1,
   },
   logo: {
     alignSelf: 'center',
@@ -133,8 +161,9 @@ const styles = StyleSheet.create({
     fontSize: 25,
   },
   storiesContainer: {
-    height: 670,
     alignItems: 'center',
+    marginTop: 20,
+    flexGrow: 1,
   },
   addStoryButton: {
     position: 'absolute',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { TouchableOpacity, Button, View, StyleSheet, FlatList, Text, SafeAreaView } from 'react-native';
+import { TouchableOpacity, TextInput, View, StyleSheet, FlatList, Text, SafeAreaView, Modal } from 'react-native';
 import axios from 'axios';
 
 
@@ -13,90 +13,102 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { REACT_APP_BACKEND_URL } from '../BackendURL';
 
+// topic suggestions for menus
+const topicData = {
+  history: [
+    'Age of Dinosaurs',
+    'Ancient Egypt',
+    'Ancient Rome',
+    'The Civil War',
+    'Declaration of Independence',
+    'World War II',
+    'Civil Rights Movement'
+  ],
+  science: [
+    'Photosynthesis',
+    'The Water Cycle',
+    'The Solar System',
+    'States of Matter',
+    'Laws of Motion',
+    'Magnetism',
+    'The Food Chain',
+  ],
+  geography: [
+    'The Seven Wonders',
+    'The Oceans',
+    'The Amazon Rainforest',
+    'Major Cities',
+    'National Parks',
+    'Antarctica',
+  ],
+};
+
 const SubjectScreen = ({ route, navigation }) => {
   const { username } = useContext(UserContext);
   const [subject, setSubject] = useState("");
-
-  useFocusEffect(
-    useCallback(() => {
-      // Function to lock the orientation
-      const lockOrientation = async () => {
-        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
-      };
-
-      lockOrientation();
-
-      // Function to unlock the orientation when the component is unmounted or loses focus
-      return () => {
-        ScreenOrientation.unlockAsync();
-      };
-    }, [])
-  );
+  const [topic, setTopic] = useState('');
+  const [color, setColor] = useState('');
 
   useEffect(() => {
     setSubject(route.params.subject);
+    setColor(route.params.color);
   }, []);
-
-  // function to handle adding a new story
-  const handleAddNewStory = async (age, character, setting, year) => {
-    // axios POST request to backend server to create and save the new story
-    await axios.post(`${REACT_APP_BACKEND_URL}/create-story`, { username: username, age: age, mainCharacter: character, setting: setting, year: year })
-      .then((response) => {
-        const responseStoryData = response.data;
-        const storyID = responseStoryData.storyID;
-        const texts = responseStoryData.texts;
-        const imageURLs = responseStoryData.images;
-        navigation.navigate('BookViewerScreen', {
-          username: username,
-          storyID: storyID,
-          texts: texts,
-          imageURLs: imageURLs,
-          startPage: 0
-        });
-        setAddStoryModalVisible(false); // hide the modal after submission
-      })
-      .catch(error => {
-        console.error(error);
-        setAddStoryModalVisible(false); // hide the modal after submission
-      });
-  };
 
   const returnToLearnScreen = () => {
     navigation.navigate('Learn');
   };
 
-  const topicData = [
-    'Age of Dinosaurs',
-    'Ancient Egypt',
-    'Ancient Rome',
-    'The Revolutionary War',
-    'Medieval Ages',
-    'Mesopotamia'
-  ];
+  const selectAge = (index) => {
+    setAge(index + 1);
+  }
+
+  const continueToEducationSelect = () => {
+    navigation.navigate('CharacterSelection', { subject: subject, topic: topic, color: color });
+  }
+
+  const ages = new Array(100).fill(0);
+  for (var i = 0; i < 100; i++) {
+    ages[i] = i + 1;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Story icons */}
-      <Text style={styles.logo}> Aesop AI </Text>
       <BackButton style={styles.backButton} onPress={returnToLearnScreen} />
-      <View style={styles.topicContainer}>
-        <FlatList 
-          // style={[styles.topicList]}
-          data={topicData}
-          numColumns={2}
-          renderItem={({ item }) =>
-            <TouchableOpacity style={styles.topicIcon}>
-              <Text>
-                {item}
-              </Text>
-            </TouchableOpacity>
-          }
-          keyExtractor={this._keyExtractor}
-        />
+      <View style={styles.menuContainer}>
+        <Text style={styles.menuTitle}>Choose a topic in {subject} for your story</Text>
+        <View style={styles.topicContainer}>
+          <TextInput
+            placeholder="Enter a topic"
+            value={topic}
+            onChangeText={setTopic}
+            style={styles.textInput}
+            multiline={true}
+            maxLength={100}
+          />
+          <FlatList
+            data={topicData[subject]}
+            numColumns={2}
+            renderItem={({ item }) =>
+              <TouchableOpacity
+                style={[styles.topicIcon, { backgroundColor: color }]}
+                onPress={() => {setTopic(item)}}
+              >
+                <Text style={styles.topicText}>
+                  {item}
+                </Text>
+              </TouchableOpacity>
+            }
+            keyExtractor={this._keyExtractor} 
+          />
+        </View>
       </View>
-      <TouchableOpacity>
-        <Text>
-          Create Story
+      <TouchableOpacity
+        style={[styles.createButton, { backgroundColor: topic != "" ? color : 'grey' }]}
+        onPress={continueToEducationSelect}
+        disabled={topic == ""}
+      >
+        <Text style={styles.createButtonText}>
+          Continue
         </Text>
       </TouchableOpacity>
     </SafeAreaView>
@@ -114,10 +126,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 25,
   },
-  topicContainer: {
+  menuContainer: {
     flex: 1,
-    height: '90%',
+    width: '100%',
+    marginTop: 40,
     alignItems: 'center',
+  },
+  topicContainer: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 10,
+    justifyContent: 'center',
+    flexGrow: 1,
   },
   backButton: {
     position: 'absolute',
@@ -125,15 +145,75 @@ const styles = StyleSheet.create({
     left: 20,
   },
   topicIcon: {
-    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 20,
+    marginVertical: 15,
     marginHorizontal: '5%',
     borderRadius: 10,
-    height: 100,
     width: '40%',
-  }
+  },
+  topicText: {
+    fontSize: 18,
+    padding: 10,
+    color: "#ead8ca",
+    fontWeight: 'bold',
+  },
+  menuTitle: {
+    padding: 25,
+    fontSize: 35,
+    fontWeight: 'bold',
+    position: 'relative',
+  },
+  textInput: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 10,
+    fontSize: 26,
+    marginBottom: 30,
+    width: '80%'
+  },
+  createButton: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 30,
+    marginHorizontal: 5,
+    marginVertical: 5,
+  },
+  createButtonText: {
+    color: 'white',
+    fontSize: 30,
+    fontWeight: 'bold',
+    padding: 15
+  },
+  modal: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 0,
+  },
+  centeredView: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: '10%',
+    marginHorizontal: '5%',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.88)',
+    borderRadius: 20,
+    padding: 25,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width: '80%',
+  },
 });
 
 export default SubjectScreen;

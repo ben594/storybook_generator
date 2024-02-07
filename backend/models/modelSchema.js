@@ -8,41 +8,61 @@ const UserSchema = new mongoose.Schema({
   storyIDs: {
     type: [String],
     required: true,
+  },
+  vocabListIDs: {
+    type: [String],
+    required: true,
+  }
+});
+
+const VocabListSchema = new mongoose.Schema({
+  vocabListID: {
+    type: String,
+    required: true
+  },
+  title: {
+    type: String,
+    required: true,
+  },
+  words: {
+    type: [String],
+    required: true
   }
 });
 
 const StorySchema = new mongoose.Schema({
-    storyID: {
-        type: String,
-        required: true
-    },
-    title: {
-        type: String,
-        required: true
-    },
-    texts: {
-        type: [String],
-        required: true
-    },
-    images: {
-        type: [String],
-        required: true
-    },
-    chatHistory: {
-      type: [
-        {
-          role: {
-            type: String
-          },
-          content: {
-            type: String
-          }
+  storyID: {
+    type: String,
+    required: true
+  },
+  title: {
+    type: String,
+    required: true
+  },
+  texts: {
+    type: [String],
+    required: true
+  },
+  images: {
+    type: [String],
+    required: true
+  },
+  chatHistory: {
+    type: [
+      {
+        role: {
+          type: String
+        },
+        content: {
+          type: String
         }
-      ]
-    }
+      }
+    ]
+  }
 });
 
 const User = mongoose.model("User", UserSchema);
 const Story = mongoose.model("Story", StorySchema);
+const VocabList = mongoose.model("VocabList", VocabListSchema);
 
-module.exports = { User, Story };
+module.exports = { User, Story, VocabList };

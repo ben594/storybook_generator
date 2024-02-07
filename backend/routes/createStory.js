@@ -82,6 +82,68 @@ createStoryRoute.post('/', async (req, res) => {
     }
 });
 
+createStoryRoute.post('/education', async (req, res) => {
+    try {
+        // create story document in the database
+        // get user input from request
+        const username = req.body.username;
+        const age = req.body.age;
+        const mainCharacter = req.body.mainCharacter;
+        const subject = req.body.subject;
+        const specificTopic = req.body.topic;
+
+        // check user exists
+        const user = await User.findOne({ username: username });
+        if (user === null) {
+            return res.status(500).send("Username does not exist");
+        }
+
+        console.log("age: ", age);
+        console.log("char: ", mainCharacter);
+        console.log("subject: ", subject);
+        console.log("topic: ", specificTopic);
+
+        // get output from chat gpt
+        const chatResponse = await getChatResponseEducation(age, mainCharacter, subject, specificTopic);
+
+        console.log("chatResponse: ", chatResponse)
+
+        // generate new story id
+        const storyID = uuidv4();
+
+        let hostedImageURLs = [];
+        for (const text of chatResponse.parsedResponse.texts) {
+            if (!text.toLowerCase().startsWith("option")) {
+                let description = text;
+                let imageURL = await getDalleResponse(description);
+                let hostedImageURL = await getAndStoreImage(imageURL, storyID);
+                hostedImageURLs.push(hostedImageURL);
+            }
+        }
+
+        // add story to database
+        const newStory = new Story({
+            storyID: storyID,
+            title: chatResponse.parsedResponse.title,
+            texts: chatResponse.parsedResponse.texts,
+            chatHistory: chatResponse.chatHistory,
+            images: hostedImageURLs
+        });
+        const insertedStory = await newStory.save();
+
+        // link story id to user in the database
+        var userStories = user.storyIDs;
+        userStories.push(storyID);
+        user.storyIDs = userStories;
+        await user.save();
+
+        // return story object
+        return res.status(201).json(insertedStory);
+    } catch (err) {
+        return res.status(500).send(err.stack);
+    }
+});
+
 async function getChatResponse(age, mainCharacter, setting, year, userPrompt) {
     const keywords = `
     main character: ${mainCharacter},
@@ -91,7 +153,7 @@ async function getChatResponse(age, mainCharacter, setting, year, userPrompt) {
     `
     const chatPrompt = `
     You are an interactive story creator and you are going to create \
-    an story for a ${age} year old kid based on the keywords. You are first going to give a title. \
+    a story for a ${age} year old kid based on the keywords. You are first going to give a title. \
     And then, you are going to write 3 paragraphs of the story and under 200 words in total. At the end, you will provide the reader with three options under 20 words \
     to let them choose how the story continues.
     
@@ -115,6 +177,46 @@ async function getChatResponse(age, mainCharacter, setting, year, userPrompt) {
     const storyResponse = storyCompletion.choices[0].message.content;
     console.log("Received story response: ", storyResponse);
 
+
+    // chathistory: [{role, content}]
+    // parsedResponse: {texts: [String], title}
+
+    return { chatHistory: [{ role: 'user', content: chatPrompt }, { role: 'assistant', content: storyResponse }], parsedResponse: parseResponse(storyResponse) };
+}
+
+async function getChatResponseEducation(age, mainCharacter, subject, specificTopic) {
+    const keywords = `
+    main character: ${mainCharacter},
+    the story is about: ${specificTopic}
+    `
+    const chatPrompt = `
+    You are an interactive story creator and you are going to create \
+    an educational story about ${specificTopic} suitable for a class in ${subject} for a ${age} year old person based on the keywords. \
+    This story can be fictional and have a fictional main character, \
+    but it should be in the context of ${specificTopic} and based on factually and historically accurate information. \
+    You are first going to give a title. \
+    Then, you are going to write 3 paragraphs of the story and under 200 words in total. At the end, you will provide the reader with three options under 20 words \
+    to let them choose how the story continues.
+    
+
+    Please use this format for giving options:
+    Option 1: ...
+    Option 2: ...
+    Option 3: ...
+
+    You should not remind the reader to choose how the story continues.
+
+    Keywords:
+    ${keywords}
+    `;
+
+    // get title and story
+    const storyCompletion = await openai.chat.completions.create({
+        messages: [{ role: "user", content: chatPrompt }],
+        model: "gpt-3.5-turbo",
+    });
+    const storyResponse = storyCompletion.choices[0].message.content;
+    console.log("Received story response: ", storyResponse);
 
     // chathistory: [{role, content}]
     // parsedResponse: {texts: [String], title}

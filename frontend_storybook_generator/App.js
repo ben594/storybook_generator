@@ -14,6 +14,8 @@ import { LogBox } from 'react-native';
 import UserProvider from './components/UserContext';
 import TabNavigator from './components/TabNavigator';
 import SubjectScreen from './components/learn/SubjectScreen';
+import CharacterSelectionScreen from './components/learn/CharacterSelectionScreen';
+import EducationOptionsScreen from './components/learn/EducationOptionsScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -55,6 +57,16 @@ export default function App() {
         <Stack.Screen
           name='SubjectScreen'
           component={SubjectScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='CharacterSelection'
+          component={CharacterSelectionScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='EducationOptions'
+          component={EducationOptionsScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

@@ -39,6 +39,8 @@ const LoginScreen = ( { navigation } ) => {
       alert('Username cannot be empty.');
       return;
     }
+
+    console.log("username: ", state.username);
   
     axios.post(`${REACT_APP_BACKEND_URL}/create-User`, {
       username: state.username,
@@ -47,7 +49,7 @@ const LoginScreen = ( { navigation } ) => {
       console.log(response.data.signUpStatus)
       if (response.data.signUpStatus = true) {
         setUsername(state.username); // update context value
-        navigation.navigate('StoryScreen', { username: state.username });
+        navigation.navigate('HomeScreen', { username: state.username });
       } else {
         alert(response.data.errorMessage);
       }

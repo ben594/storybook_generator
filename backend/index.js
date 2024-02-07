@@ -15,6 +15,7 @@ const getStoriesRoute = require('./routes/getStories');
 const getStoryRoute = require('./routes/getStory');
 const { createStoryRoute } = require('./routes/createStory');
 const continueStoryRoute = require('./routes/continueStory');
+const { vocabListRoute } = require('./routes/vocabList');
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
@@ -37,6 +38,9 @@ app.use('/create-story', createStoryRoute);
 
 // continue story route
 app.use('/continue-story', continueStoryRoute);
+
+// create vocab list route
+app.use('/vocab-list', vocabListRoute);
 
 const start = async () => {
     try {
