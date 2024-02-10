@@ -12,7 +12,11 @@ const UserSchema = new mongoose.Schema({
   vocabListIDs: {
     type: [String],
     required: true,
-  }
+  },
+  password: {
+    type: String,
+    required: true,
+  },
 });
 
 const VocabListSchema = new mongoose.Schema({

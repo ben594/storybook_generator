@@ -98,11 +98,6 @@ createStoryRoute.post('/education', async (req, res) => {
             return res.status(500).send("Username does not exist");
         }
 
-        console.log("age: ", age);
-        console.log("char: ", mainCharacter);
-        console.log("subject: ", subject);
-        console.log("topic: ", specificTopic);
-
         // get output from chat gpt
         const chatResponse = await getChatResponseEducation(age, mainCharacter, subject, specificTopic);
 

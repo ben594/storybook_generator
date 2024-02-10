@@ -1,14 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import StorybookApp from './components/StorybookApp';
 import LoginScreen from './components/Login';
 import BookViewer from './components/book_viewer/BookViewer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NativeScreenContainer } from 'react-native-screens';
 import { LogBox } from 'react-native'; 
 
 import UserProvider from './components/UserContext';
@@ -16,6 +13,7 @@ import TabNavigator from './components/TabNavigator';
 import SubjectScreen from './components/learn/SubjectScreen';
 import CharacterSelectionScreen from './components/learn/CharacterSelectionScreen';
 import EducationOptionsScreen from './components/learn/EducationOptionsScreen';
+import VocabListScreen from './components/learn/VocabListScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -67,6 +65,11 @@ export default function App() {
         <Stack.Screen
           name='EducationOptions'
           component={EducationOptionsScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='VocabList'
+          component={VocabListScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

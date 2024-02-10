@@ -1,11 +1,9 @@
 import React, { useEffect, useCallback } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import * as ScreenOrientation from 'expo-screen-orientation';
-import { useFocusEffect } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 import StorybookApp from './StorybookApp';
 import LearnScreen from './learn/LearnScreen';
-
 
 const Tab = createBottomTabNavigator();
 
@@ -27,12 +25,22 @@ const TabNavigator = () => {
       <Tab.Screen
         name="Library"
         component={StorybookApp}
-        options={{ headerShown: false }}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="book" color={color} size={size} />
+          ),
+        }}
       />
       <Tab.Screen
         name="Learn"
         component={LearnScreen}
-        options={{ headerShown: false }}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="bulb" color={color} size={size} />
+          ),
+        }}
       />
     </Tab.Navigator>
   );

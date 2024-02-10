@@ -2,12 +2,10 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { TextInput, Button, View, StyleSheet, FlatList, Text, SafeAreaView } from 'react-native';
 import StoryIcon from './StoryIcon';
-import NavBar from './NavBar';
 import CircularButton from './common/CircularButton';
 import axios from 'axios';
 import AddStory from './AddStory';
 import UserProvider, { UserContext } from './UserContext';
-import * as ScreenOrientation from 'expo-screen-orientation';
 import { useFocusEffect } from '@react-navigation/native';
 import { REACT_APP_BACKEND_URL } from './BackendURL';
 

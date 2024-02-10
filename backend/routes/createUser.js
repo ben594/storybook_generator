@@ -12,19 +12,20 @@ router.get('/', (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const username = req.body.username;
+        const password = req.body.password;
 
         // check if user already exists
         const user = await User.findOne({ username: username });
         if (user != null) {
-            return res.status(500).send("Username already exists");
+            return res.status(500).send("Username has already been taken");
         }
 
         // create new user document in database
-        const newUser = new User({ username: username });
+        const newUser = new User({ username: username, password: password });
         const insertedUser = await newUser.save();
         return res.status(201).json(insertedUser);
-    } catch(err) {
-        return res.status(500).send(err.stack);
+    } catch (err) {
+        return res.status(500).send("Unable to signup");
     }
 });
 
