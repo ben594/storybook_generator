@@ -31,7 +31,13 @@ const LearnScreen = ({ route, navigation }) => {
           renderItem={({ item }) =>
             <TouchableOpacity
               style={[styles.subjectBanner, { backgroundColor: item.color }]}
-              onPress={() => navigation.navigate('SubjectScreen', {subject: item.title.toLowerCase(), color: item.color})}
+              onPress={() => {
+                if (item.title == 'Vocabulary') {
+                  navigation.navigate('VocabListScreen');
+                } else {
+                  navigation.navigate('SubjectScreen', {subject: item.title.toLowerCase(), color: item.color});
+                }
+              }}
             >
               <Text style={styles.bannerTitle}>
                 {item.title}

@@ -2,46 +2,12 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { TouchableOpacity, TextInput, View, StyleSheet, FlatList, Text, SafeAreaView, Modal } from 'react-native';
 import axios from 'axios';
 
-
-import StoryIcon from '../StoryIcon';
-import NavBar from '../NavBar';
 import BackButton from '../common/BackButton';
-import AddStory from '../AddStory';
 import UserProvider, { UserContext } from '../UserContext';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { REACT_APP_BACKEND_URL } from '../BackendURL';
-
-// topic suggestions for menus
-const topicData = {
-    history: [
-        'Age of Dinosaurs',
-        'Ancient Egypt',
-        'Ancient Rome',
-        'The Civil War',
-        'Declaration of Independence',
-        'World War II',
-        'Civil Rights Movement'
-    ],
-    science: [
-        'Photosynthesis',
-        'The Water Cycle',
-        'The Solar System',
-        'States of Matter',
-        'Laws of Motion',
-        'Magnetism',
-        'The Food Chain',
-    ],
-    geography: [
-        'The Seven Wonders',
-        'The Oceans',
-        'The Amazon Rainforest',
-        'Major Cities',
-        'National Parks',
-        'Antarctica',
-    ],
-};
 
 const EducationOptionsScreen = ({ route, navigation }) => {
     const { username } = useContext(UserContext);
@@ -95,25 +61,6 @@ const EducationOptionsScreen = ({ route, navigation }) => {
             topic: topic,
         });
     };
-
-    const selectAge = (index) => {
-        setAge(index + 1);
-    }
-
-    const continueToEducationOptions = () => {
-        navigation.navigate('EducationOptions', {
-            subject: subject,
-            color: color,
-            topic: topic,
-            character: character,
-            age: age,
-        });
-    }
-
-    const ages = new Array(100).fill(0);
-    for (var i = 0; i < 100; i++) {
-        ages[i] = i + 1;
-    }
 
     return (
         <SafeAreaView style={styles.container}>

@@ -2,16 +2,10 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { TouchableOpacity, TextInput, View, StyleSheet, FlatList, Text, SafeAreaView, Modal } from 'react-native';
 import axios from 'axios';
 
-
-import StoryIcon from '../StoryIcon';
-import NavBar from '../NavBar';
 import BackButton from '../common/BackButton';
-import AddStory from '../AddStory';
 import UserProvider, { UserContext } from '../UserContext';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useFocusEffect } from '@react-navigation/native';
-
-import { REACT_APP_BACKEND_URL } from '../BackendURL';
 
 // topic suggestions for menus
 const topicData = {
@@ -58,17 +52,8 @@ const SubjectScreen = ({ route, navigation }) => {
     navigation.navigate('Learn');
   };
 
-  const selectAge = (index) => {
-    setAge(index + 1);
-  }
-
   const continueToEducationSelect = () => {
     navigation.navigate('CharacterSelection', { subject: subject, topic: topic, color: color });
-  }
-
-  const ages = new Array(100).fill(0);
-  for (var i = 0; i < 100; i++) {
-    ages[i] = i + 1;
   }
 
   return (
