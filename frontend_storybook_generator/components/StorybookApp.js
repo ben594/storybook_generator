@@ -8,6 +8,7 @@ import AddStory from './AddStory';
 import UserProvider, { UserContext } from './UserContext';
 import { useFocusEffect } from '@react-navigation/native';
 import { REACT_APP_BACKEND_URL } from './BackendURL';
+import ProfileIcon from './common/ProfileIcon';
 
 const StorybookApp = ({ route, navigation }) => {
   const { username } = useContext(UserContext);
@@ -117,11 +118,16 @@ const StorybookApp = ({ route, navigation }) => {
     }
   };
 
+  const navigateToProfileScreen = () => {
+    navigation.navigate('ProfileScreen');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Story icons */}
       <Text style={styles.logo}> Aesop AI </Text>
       <CircularButton style={styles.addStoryButton} onPress={() => setAddStoryModalVisible(true)} />
+      <ProfileIcon style={styles.profileButton} onPress={navigateToProfileScreen}/>
       <AddStory
         isVisible={isAddStoryModalVisible}
         onAddStory={handleAddNewStory}
@@ -167,6 +173,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 50,
     left: 20,
+  },
+  profileButton: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    alignSelf: 'flex-end',
   },
 });
 

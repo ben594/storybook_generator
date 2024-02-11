@@ -14,6 +14,7 @@ import SubjectScreen from './components/learn/SubjectScreen';
 import CharacterSelectionScreen from './components/learn/CharacterSelectionScreen';
 import EducationOptionsScreen from './components/learn/EducationOptionsScreen';
 import VocabListScreen from './components/learn/VocabListScreen';
+import ProfileScreen from './components/Profile';
 
 const Tab = createBottomTabNavigator();
 
@@ -40,6 +41,11 @@ export default function App() {
         <Stack.Screen
           name='LoginScreen'
           component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='ProfileScreen'
+          component={ProfileScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen

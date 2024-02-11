@@ -1,6 +1,6 @@
 // AddStory.js
 import React, { useState } from 'react';
-import { Text, TextInput, Button, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, TextInput, Button, View, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import Modal from 'react-native-modal';
 
 const AddStory = ({ isVisible, onAddStory, onClose }) => {
@@ -30,8 +30,9 @@ const AddStory = ({ isVisible, onAddStory, onClose }) => {
         style={styles.modal}
         backdropColor="transparent"
       >
-        <View style={styles.centeredView}>
+        <KeyboardAvoidingView style={styles.centeredView} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <View style={styles.modalView}>
+            <Text style={styles.modalTextPrompt}>Creative Story Generation!</Text>
             <Text style={styles.modalTextPrompt}>Age:</Text>
             <TextInput
               placeholder="Enter age"
@@ -51,7 +52,7 @@ const AddStory = ({ isVisible, onAddStory, onClose }) => {
               maxLength={100}
             />
 
-            <View style={{flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity style={styles.suggestionButton1} onPress={() => { setCharacter("Dragon") }}>
                 <Text style={{ fontSize: 10, color: "white" }}>Dragon 🐉</Text>
               </TouchableOpacity>
@@ -72,7 +73,7 @@ const AddStory = ({ isVisible, onAddStory, onClose }) => {
               maxLength={30}
             />
 
-            <View style={{flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity style={styles.suggestionButton1} onPress={() => { setSetting("Castle") }}>
                 <Text style={{ fontSize: 10, color: "white" }}>Castle 🏰</Text>
               </TouchableOpacity>
@@ -93,7 +94,7 @@ const AddStory = ({ isVisible, onAddStory, onClose }) => {
               maxLength={20}
             />
 
-            <View style={{flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity style={styles.suggestionButton1} onPress={() => { setYear("1000 BCE") }}>
                 <Text style={{ fontSize: 10, color: "white" }}>1000 BCE 🏛</Text>
               </TouchableOpacity>
@@ -107,10 +108,10 @@ const AddStory = ({ isVisible, onAddStory, onClose }) => {
 
 
             <TouchableOpacity style={styles.createButton} onPress={() => handleAddNewStory(age, character, setting, year)}>
-                <Text style={{ fontSize: 20, color: "black", fontWeight: 'bold' }}>Create story!</Text>
+              <Text style={{ fontSize: 20, color: "black", fontWeight: 'bold' }}>Create story!</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     );
   } else {
@@ -131,77 +132,78 @@ const AddStory = ({ isVisible, onAddStory, onClose }) => {
 };
 
 const styles = StyleSheet.create({
-    modal: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      margin: 0,
+  modal: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 0,
+  },
+  centeredView: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: '10%',
+    marginHorizontal: '5%',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.88)',
+    borderRadius: 20,
+    padding: 25,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
     },
-    centeredView: {
-      justifyContent: "center",
-      alignItems: "center",
-      marginVertical: '10%', 
-      marginHorizontal: '5%', 
-    },
-    modalView: {
-      margin: 20,
-      backgroundColor: 'rgba(255, 255, 255, 0.88)',
-      borderRadius: 20,
-      padding: 25,
-      alignItems: "center",
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 2
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 5,
-      width: '80%',
-    },
-    modalTextPrompt: {
-      marginTop: 20,
-      fontWeight: 'bold'
-    },
-    modalTextInput: {
-      margin: 5,
-      borderWidth: 1,
-      padding: 10,
-      borderColor: '#000', // change border color to black
-      borderRadius: 10, // add some border radius
-    },
-    suggestionButton1: {
-      backgroundColor: '#579BB1',
-      borderColor: '#579BB1',
-      borderWidth: 1,
-      borderRadius: 5,
-      padding: 5,
-      margin: 5
-    },
-    suggestionButton2: {
-      backgroundColor: '#a35d5d',
-      borderColor: '#a35d5d',
-      borderWidth: 1,
-      borderRadius: 5,
-      padding: 5,
-      margin: 5
-    },
-    suggestionButton3: {
-      backgroundColor: '#99A98F',
-      borderColor: '#99A98F',
-      borderWidth: 1,
-      borderRadius: 5,
-      padding: 5,
-      margin: 5
-    },
-    createButton: {
-      borderWidth: 1,
-      borderRadius: 5,
-      backgroundColor: '#ead8ca',
-      borderColor: '#ead8ca',
-      padding: 5,
-      marginTop: 10
-    }
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width: '80%',
+  },
+  modalTextPrompt: {
+    marginTop: 16,
+    fontWeight: 'bold',
+    fontSize: 16
+  },
+  modalTextInput: {
+    margin: 5,
+    borderWidth: 1,
+    padding: 10,
+    borderColor: '#000', // change border color to black
+    borderRadius: 10, // add some border radius
+  },
+  suggestionButton1: {
+    backgroundColor: '#579BB1',
+    borderColor: '#579BB1',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 5,
+    margin: 5
+  },
+  suggestionButton2: {
+    backgroundColor: '#a35d5d',
+    borderColor: '#a35d5d',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 5,
+    margin: 5
+  },
+  suggestionButton3: {
+    backgroundColor: '#99A98F',
+    borderColor: '#99A98F',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 5,
+    margin: 5
+  },
+  createButton: {
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: '#ead8ca',
+    borderColor: '#ead8ca',
+    padding: 5,
+    marginTop: 10
+  }
 });
 
 export default AddStory;

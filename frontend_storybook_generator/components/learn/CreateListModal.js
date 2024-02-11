@@ -52,7 +52,8 @@ const CreateListModal = ({ isVisible, onCreate, onClose }) => {
       style={styles.modal}
       backdropColor="transparent"
     >
-      <View
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.centeredView}
       >
         <View style={styles.modalView}>
@@ -74,17 +75,17 @@ const CreateListModal = ({ isVisible, onCreate, onClose }) => {
             <TouchableOpacity style={styles.addButton} onPress={addNewItem}>
               <Text style={styles.addButtonLabel}>Add word</Text>
             </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.createButton}
+              onPress={() => handleAddList(name, words)}
+            >
+              <Text style={{ fontSize: 20, color: "black", fontWeight: 'bold' }}>Create list!</Text>
+            </TouchableOpacity>
           </View>
 
 
-          <TouchableOpacity
-            style={styles.createButton}
-            onPress={() => handleAddList(name, words)}
-          >
-            <Text style={{ fontSize: 20, color: "black", fontWeight: 'bold' }}>Create list!</Text>
-          </TouchableOpacity>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
