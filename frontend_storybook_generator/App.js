@@ -68,7 +68,7 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='VocabList'
+          name='VocabListScreen'
           component={VocabListScreen}
           options={{ headerShown: false }}
         />

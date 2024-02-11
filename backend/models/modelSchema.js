@@ -62,6 +62,10 @@ const StorySchema = new mongoose.Schema({
         }
       }
     ]
+  },
+  vocabList: {
+    type: [String],
+    required: false,
   }
 });
 

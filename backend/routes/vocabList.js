@@ -59,10 +59,25 @@ vocabListRoute.post('/get-lists', async (req, res) => {
             return res.status(500).send("Username does not exist");
         }
 
+        let vocabListInfo = [];
         const vocabListIDs = user.vocabListIDs;
+        for (var i = 0; i < vocabListIDs.length; i++) {
+            const vocabList = await VocabList.findOne({ vocabListID: vocabListIDs[i] });
+            const title = vocabList.title;
+            const words = vocabList.words;
+
+            const info = {
+                title: title,
+                words: words,
+            };
+
+            vocabListInfo.push(info);
+        }
+
+        console.log("get lists called: ", vocabListInfo);
 
         // return list of vocab list IDs
-        return res.status(201).json(vocabListIDs);
+        return res.status(201).json(vocabListInfo);
     } catch (err) {
         return res.status(500).send(err.stack);
     }

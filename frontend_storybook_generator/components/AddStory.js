@@ -58,8 +58,8 @@ const AddStory = ({ isVisible, onAddStory, onClose }) => {
               <TouchableOpacity style={styles.suggestionButton2} onPress={() => { setCharacter("Pirate") }}>
                 <Text style={{ fontSize: 10, color: "white" }}>Pirate ☠️</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.suggestionButton3} onPress={() => { setCharacter("Spongebob") }}>
-                <Text style={{ fontSize: 10, color: "white" }}>Spongebob 🧽</Text>
+              <TouchableOpacity style={styles.suggestionButton3} onPress={() => { setCharacter("Fish") }}>
+                <Text style={{ fontSize: 10, color: "white" }}>Fish 🐠</Text>
               </TouchableOpacity>
             </View>
 
@@ -80,7 +80,7 @@ const AddStory = ({ isVisible, onAddStory, onClose }) => {
                 <Text style={{ fontSize: 10, color: "white" }}>Desert 🐪</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.suggestionButton3} onPress={() => { setSetting("Underwater") }}>
-                <Text style={{ fontSize: 10, color: "white" }}>Underwater 🐠</Text>
+                <Text style={{ fontSize: 10, color: "white" }}>Underwater 🌊</Text>
               </TouchableOpacity>
             </View>
 
@@ -179,8 +179,8 @@ const styles = StyleSheet.create({
       margin: 5
     },
     suggestionButton2: {
-      backgroundColor: '#FF6969',
-      borderColor: '#FF6969',
+      backgroundColor: '#a35d5d',
+      borderColor: '#a35d5d',
       borderWidth: 1,
       borderRadius: 5,
       padding: 5,

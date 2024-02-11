@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Animated, TouchableOpacity, Touchable } from 'react-native';
 import * as Speech from 'expo-speech';
 
 import Button from '../Button';
@@ -40,7 +40,11 @@ const BookViewerTopBar = ({ topBarVisible, navigation }) => {
 
     return (
         <Animated.View style={[styles.topBar, { transform: [{ translateY }] }]}>
-            <Button onPress={returnHome} text={'Home'}/>
+            <TouchableOpacity style={styles.homeButton} onPress={returnHome}>
+                <Text style={styles.homeButtonText}>
+                    Home
+                </Text>
+            </TouchableOpacity>
         </Animated.View>
     );
 };
@@ -55,11 +59,26 @@ const styles = StyleSheet.create({
         padding: 10,
         zIndex: 999,
         height: 75,
+        flex: 1,
+        justifyContent: 'center',
     },
     text: {
         color: 'white',
         fontWeight: 'bold',
     },
+    homeButton: {
+        left: 20,
+        backgroundColor: '#ead8ca',
+        borderRadius: 10,
+        width: 100,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    homeButtonText: {
+        color: 'black',
+        fontWeight: 'bold',
+        padding: 5,
+    }
 });
 
 export default BookViewerTopBar;

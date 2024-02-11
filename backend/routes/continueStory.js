@@ -35,7 +35,6 @@ router.post('/', async (req, res) => {
         const imageProgress = story.images;
         const chatHistory = story.chatHistory.map((obj) => ({role: obj.role, content: obj.content}));
 
-        console.log("pastChatHistory: ", chatHistory)
         // get output from chat gpt
         const chatResponse = await continueChatResponse(chatHistory, story.texts.length, selectedOption);
 
@@ -49,12 +48,8 @@ router.post('/', async (req, res) => {
                 let hostedImageURL = await getAndStoreImage(imageURL, storyID);
                 console.log("HOSTEDIMAGEURL: ", hostedImageURL)
                 story.images.push(hostedImageURL)
-                console.log("HOSTEDIMAGEURLs: ", story.images)
             }
-        }
-
-        console.log("FINISHED WAITING!!!\n\n\n\n")
-        
+        }        
 
         // Save the new texts and chatHistory to the user's story
         story.texts = story.texts.concat(chatResponse.parsedResponse.texts);

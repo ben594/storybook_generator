@@ -105,7 +105,7 @@ const BookViewer = ({ route, navigation }) => {
         pages.map((page, index) => {
           const isLastPage = index === pages.length - 1;
           return (
-            <TouchableOpacity onPress={handleTapAnywhere} activeOpacity={0.9}>
+            <TouchableOpacity onPress={handleTapAnywhere} activeOpacity={0.9} key={index}>
               <View key={`${page.pageNumber}`} style={styles.page}>
                 {topBarVisible && <BookViewerTopBar topBarVisible={topBarVisible} navigation={navigation} />}
                 <Image

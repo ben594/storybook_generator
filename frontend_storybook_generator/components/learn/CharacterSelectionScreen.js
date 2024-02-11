@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { TouchableOpacity, TextInput, View, StyleSheet, FlatList, Text, SafeAreaView, Modal } from 'react-native';
 import axios from 'axios';
-
-import BackButton from '../common/BackButton';
 import UserProvider, { UserContext } from '../UserContext';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useFocusEffect } from '@react-navigation/native';
+import LottieView from 'lottie-react-native';
+
+import BackButton from '../common/BackButton';
+import { REACT_APP_BACKEND_URL } from '../BackendURL';
 
 const CharacterSelectionScreen = ({ route, navigation }) => {
     const { username } = useContext(UserContext);
@@ -14,6 +16,7 @@ const CharacterSelectionScreen = ({ route, navigation }) => {
     const [character, setCharacter] = useState('');
     const [topic, setTopic] = useState('');
     const [color, setColor] = useState('');
+    const [creatingStory, setCreatingStory] = useState(false);
 
     useEffect(() => {
         setSubject(route.params.subject);
@@ -42,6 +45,33 @@ const CharacterSelectionScreen = ({ route, navigation }) => {
         });
     }
 
+    // function to handle adding a new story
+    const handleAddNewStory = async () => {
+        // axios POST request to backend server to create and save the new story
+        if (creatingStory) {
+            return;
+        }
+        setCreatingStory(true)
+        await axios.post(`${REACT_APP_BACKEND_URL}/create-story/education`, { username: username, age: age, mainCharacter: character, subject: subject, topic: topic })
+            .then((response) => {
+                setCreatingStory(false);
+                const responseStoryData = response.data;
+                const storyID = responseStoryData.storyID;
+                const texts = responseStoryData.texts;
+                const imageURLs = responseStoryData.images;
+                navigation.navigate('BookViewerScreen', {
+                    username: username,
+                    storyID: storyID,
+                    texts: texts,
+                    imageURLs: imageURLs,
+                    startPage: 0
+                });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    };
+
     const ages = new Array(100).fill(0);
     for (var i = 0; i < 100; i++) {
         ages[i] = i + 1;
@@ -60,6 +90,7 @@ const CharacterSelectionScreen = ({ route, navigation }) => {
                         style={{ backgroundColor: 'white', borderRadius: 10 }}
                         data={ages}
                         horizontal
+                        keyExtractor={this._keyExtractor}
                         renderItem={
                             ({ item, index }) => {
                                 if (index + 1 === age) {
@@ -88,13 +119,19 @@ const CharacterSelectionScreen = ({ route, navigation }) => {
                     />
                 </View>
             </View>
+            {/* Loading view */}
+            {creatingStory && (
+                <View style={styles.loadingView}>
+                    <LottieView source={require('../../assets/loading.json')} autoPlay loop style={styles.lottie} />
+                </View>
+            )}
             <TouchableOpacity
-                style={[styles.createButton, { backgroundColor: age > 0 && character != "" ? color : 'grey' }]}
-                onPress={continueToEducationOptions}
-                disabled={age < 0 || character == ""}
+                style={[styles.createButton, { backgroundColor: age > 0 && character != "" && !creatingStory ? color : 'grey' }]}
+                onPress={handleAddNewStory}
+                disabled={age < 0 || character == "" || creatingStory}
             >
                 <Text style={styles.createButtonText}>
-                    Continue
+                    Create story!
                 </Text>
             </TouchableOpacity>
         </SafeAreaView>
@@ -183,6 +220,13 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
         width: '80%',
+    },
+    loadingView: {
+        alignSelf: 'center',
+    },
+    lottie: {
+        height: 75,
+        width: 75,
     },
 });
 
