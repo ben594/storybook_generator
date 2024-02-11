@@ -27,6 +27,7 @@ const BookViewer = ({ route, navigation }) => {
     useCallback(() => {
       // Function to lock the orientation
       const lockOrientation = async () => {
+        await ScreenOrientation.unlockAsync();
         await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_LEFT);
       };
 
@@ -35,6 +36,7 @@ const BookViewer = ({ route, navigation }) => {
       // Function to unlock the orientation when the component is unmounted or loses focus
       return async () => {
         await ScreenOrientation.unlockAsync();
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
       };
     }, [])
   );

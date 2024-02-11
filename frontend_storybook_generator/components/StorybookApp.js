@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
   },
   storiesContainer: {
+    flex: 1,
     alignItems: 'center',
     marginTop: 20,
     flexGrow: 1,
