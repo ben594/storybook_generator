@@ -99,7 +99,7 @@ const BookViewer = ({ route, navigation }) => {
       onPageScroll={(e) => handlePageScroll(e)}
       onPageSelected={async (e) => {
         Speech.stop();
-        Speech.speak(pages[e.nativeEvent.position].text, { rate: 0.8, voice: "com.apple.ttsbundle.Karen-compact" });
+        Speech.speak(pages[e.nativeEvent.position].text, { rate: 1, voice: "com.apple.ttsbundle.Daniel-compact" });
         setCurrentPage(e.nativeEvent.position)
       }}
     >
