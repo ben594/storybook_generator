@@ -69,33 +69,6 @@ const StorybookApp = ({ route, navigation }) => {
     }, [])
   );
 
-  // run this when this page first renders
-  useEffect(() => {
-    // call backend api to get list of basic story info
-    axios.get(`${REACT_APP_BACKEND_URL}/get-stories`, { params: { username: username } })
-      .then(response => {
-        const responseStoryData = response.data.storyInfo;
-        let retrievedData = [];
-
-        // loop through response data to get ids and titles of stories
-        for (var i = 0; i < responseStoryData.length; i++) {
-          const story = responseStoryData[i];
-          const storyInfo = {
-            id: story.storyID,
-            title: story.title,
-            imageURL: story.thumbnailURL
-          };
-
-          retrievedData.push(storyInfo);
-        }
-
-        setStoryData(retrievedData);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }, []);
-
   // Function to handle story icon press
   const handlePress = async (storyID) => {
     try {
@@ -145,7 +118,7 @@ const StorybookApp = ({ route, navigation }) => {
               }}
             />
           }
-          keyExtractor={this._keyExtractor}
+          keyExtractor={(item) => item.id}
         />
       </View>
     </SafeAreaView>

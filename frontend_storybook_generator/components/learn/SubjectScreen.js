@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { TouchableOpacity, TextInput, View, StyleSheet, FlatList, Text, SafeAreaView, Modal } from 'react-native';
+import { TouchableOpacity, TextInput, View, StyleSheet, FlatList, Text, SafeAreaView, Modal, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import axios from 'axios';
 
 import BackButton from '../common/BackButton';
@@ -59,34 +59,36 @@ const SubjectScreen = ({ route, navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <BackButton style={styles.backButton} onPress={returnToLearnScreen} />
-      <View style={styles.menuContainer}>
-        <Text style={styles.menuTitle}>Choose a topic in {subject} for your story</Text>
-        <View style={styles.topicContainer}>
-          <TextInput
-            placeholder="Enter a topic"
-            value={topic}
-            onChangeText={setTopic}
-            style={styles.textInput}
-            multiline={true}
-            maxLength={100}
-          />
-          <FlatList
-            data={topicData[subject]}
-            numColumns={2}
-            renderItem={({ item }) =>
-              <TouchableOpacity
-                style={[styles.topicIcon, { backgroundColor: color }]}
-                onPress={() => {setTopic(item)}}
-              >
-                <Text style={styles.topicText}>
-                  {item}
-                </Text>
-              </TouchableOpacity>
-            }
-            keyExtractor={this._keyExtractor} 
-          />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.menuContainer}>
+          <Text style={styles.menuTitle}>Choose a topic in {subject} for your story</Text>
+          <View style={styles.topicContainer}>
+            <TextInput
+              placeholder="Enter a topic"
+              value={topic}
+              onChangeText={setTopic}
+              style={styles.textInput}
+              multiline={true}
+              maxLength={100}
+            />
+            <FlatList
+              data={topicData[subject]}
+              numColumns={2}
+              renderItem={({ item }) =>
+                <TouchableOpacity
+                  style={[styles.topicIcon, { backgroundColor: color }]}
+                  onPress={() => { setTopic(item) }}
+                >
+                  <Text style={styles.topicText}>
+                    {item}
+                  </Text>
+                </TouchableOpacity>
+              }
+              keyExtractor={this._keyExtractor}
+            />
+          </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
       <TouchableOpacity
         style={[styles.createButton, { backgroundColor: topic != "" ? color : 'grey' }]}
         onPress={continueToEducationSelect}
