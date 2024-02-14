@@ -23,24 +23,6 @@ const BookViewer = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [topBarVisible, setTopBarVisible] = useState(false);
 
-  useFocusEffect(
-    useCallback(() => {
-      // Function to lock the orientation
-      const lockOrientation = async () => {
-        await ScreenOrientation.unlockAsync();
-        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_LEFT);
-      };
-
-      lockOrientation();
-
-      // Function to unlock the orientation when the component is unmounted or loses focus
-      return async () => {
-        await ScreenOrientation.unlockAsync();
-        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
-      };
-    }, [])
-  );
-
   const isLastPage = currentPage === pages.length - 1;
 
   useEffect(() => {
@@ -133,7 +115,6 @@ const BookViewer = ({ route, navigation }) => {
                             // make post request to continue story
                             axios.post(`${REACT_APP_BACKEND_URL}/continue-story`, { storyID: storyID, option: choiceId })
                               .then((response) => {
-                                console.log("response.data: ", response.data);
                                 const responseStoryData = response.data;
                                 const newTexts = responseStoryData.texts;
                                 const newImageURLs = responseStoryData.images;

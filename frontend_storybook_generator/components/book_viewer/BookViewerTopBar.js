@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Animated, TouchableOpacity, Touchable } from 'react-native';
 import * as Speech from 'expo-speech';
-
-import Button from '../Button';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 const BookViewerTopBar = ({ topBarVisible, navigation }) => {
     const [animation] = useState(new Animated.Value(0));
@@ -33,8 +32,10 @@ const BookViewerTopBar = ({ topBarVisible, navigation }) => {
         outputRange: [-50, 0],
     });
 
-    const returnHome = () => {
+    const returnHome = async () => {
         Speech.stop();
+        await ScreenOrientation.unlockAsync();
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
         navigation.navigate("HomeScreen");
       }
 

@@ -53,12 +53,14 @@ const CharacterSelectionScreen = ({ route, navigation }) => {
     }
     setCreatingStory(true)
     await axios.post(`${REACT_APP_BACKEND_URL}/create-story/education`, { username: username, age: age, mainCharacter: character, subject: subject, topic: topic })
-      .then((response) => {
+      .then(async (response) => {
         setCreatingStory(false);
         const responseStoryData = response.data;
         const storyID = responseStoryData.storyID;
         const texts = responseStoryData.texts;
         const imageURLs = responseStoryData.images;
+        await ScreenOrientation.unlockAsync();
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_LEFT);
         navigation.navigate('BookViewerScreen', {
           username: username,
           storyID: storyID,

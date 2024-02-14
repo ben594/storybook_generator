@@ -1,12 +1,14 @@
 // StorybookApp.js
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { TextInput, Button, View, StyleSheet, FlatList, Text, SafeAreaView } from 'react-native';
+import * as ScreenOrientation from 'expo-screen-orientation';
+import { useFocusEffect } from '@react-navigation/native';
+import axios from 'axios';
+
 import StoryIcon from './StoryIcon';
 import CircularButton from './common/CircularButton';
-import axios from 'axios';
 import AddStory from './AddStory';
 import UserProvider, { UserContext } from './UserContext';
-import { useFocusEffect } from '@react-navigation/native';
 import { REACT_APP_BACKEND_URL } from './BackendURL';
 import ProfileIcon from './common/ProfileIcon';
 
@@ -20,11 +22,13 @@ const StorybookApp = ({ route, navigation }) => {
   const handleAddNewStory = async (age, character, setting, year) => {
     // axios POST request to backend server to create and save the new story
     await axios.post(`${REACT_APP_BACKEND_URL}/create-story`, { username: username, age: age, mainCharacter: character, setting: setting, year: year })
-      .then((response) => {
+      .then(async (response) => {
         const responseStoryData = response.data;
         const storyID = responseStoryData.storyID;
         const texts = responseStoryData.texts;
         const imageURLs = responseStoryData.images;
+        await ScreenOrientation.unlockAsync();
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_LEFT);
         navigation.navigate('BookViewerScreen', {
           username: username,
           storyID: storyID,
@@ -77,6 +81,9 @@ const StorybookApp = ({ route, navigation }) => {
       const responseStoryData = response.data.story;
       const texts = responseStoryData.texts;
       const imageURLs = responseStoryData.imageURLs;
+
+      await ScreenOrientation.unlockAsync();
+      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_LEFT);
 
       // Navigate to book viewer and pass the username, story id, texts, images
       navigation.navigate('BookViewerScreen', {
