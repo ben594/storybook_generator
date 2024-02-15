@@ -147,17 +147,17 @@ const styles = StyleSheet.create({
   storiesContainer: {
     flex: 1,
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 30,
     flexGrow: 1,
   },
   addStoryButton: {
     position: 'absolute',
-    top: 50,
+    top: '5%',
     left: 20,
   },
   profileButton: {
     position: 'absolute',
-    top: 50,
+    top: '5%',
     right: 20,
     alignSelf: 'flex-end',
   },

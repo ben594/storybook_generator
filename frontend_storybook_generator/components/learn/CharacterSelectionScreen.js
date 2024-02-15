@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { TouchableOpacity, TextInput, View, StyleSheet, FlatList, Text, SafeAreaView, Modal, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { TouchableOpacity, TextInput, View, StyleSheet, FlatList, Text, SafeAreaView, Modal, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import axios from 'axios';
 import UserProvider, { UserContext } from '../UserContext';
 import * as ScreenOrientation from 'expo-screen-orientation';
@@ -81,54 +81,59 @@ const CharacterSelectionScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <BackButton style={styles.backButton} onPress={returnToTopicScreen} />
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.menuContainer}>
-          <Text style={styles.menuTitle}>Choose a name and age for your character</Text>
-          <View style={styles.characterMenuContainer}>
-            <Text style={styles.characterMenuText}>
-              Select your age
-            </Text>
-            <FlatList
-              style={{ backgroundColor: 'white', borderRadius: 10 }}
-              data={ages}
-              horizontal
-              keyExtractor={this._keyExtractor}
-              renderItem={
-                ({ item, index }) => {
-                  if (index + 1 === age) {
-                    return (
-                      <TouchableOpacity style={{ marginHorizontal: 10, backgroundColor: color, borderRadius: 5 }} onPress={() => selectAge(index)}><Text style={{ fontSize: 30, padding: 5, color: 'white' }}>{item}</Text></TouchableOpacity>
-                    )
-                  } else {
-                    return (
-                      <TouchableOpacity style={{ marginHorizontal: 10 }} onPress={() => selectAge(index)}><Text style={{ fontSize: 30, padding: 5 }}>{item}</Text></TouchableOpacity>
-                    )
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
+        <BackButton style={styles.backButton} onPress={returnToTopicScreen} />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.menuContainer}>
+            <Text style={styles.menuTitle}>Choose a name and age for your character</Text>
+            <View style={styles.characterMenuContainer}>
+              <Text style={styles.characterMenuText}>
+                Select your age
+              </Text>
+              <FlatList
+                style={{ backgroundColor: 'white', borderRadius: 10 }}
+                data={ages}
+                horizontal
+                keyExtractor={this._keyExtractor}
+                renderItem={
+                  ({ item, index }) => {
+                    if (index + 1 === age) {
+                      return (
+                        <TouchableOpacity style={{ marginHorizontal: 10, backgroundColor: color, borderRadius: 5 }} onPress={() => selectAge(index)}><Text style={{ fontSize: 30, padding: 5, color: 'white' }}>{item}</Text></TouchableOpacity>
+                      )
+                    } else {
+                      return (
+                        <TouchableOpacity style={{ marginHorizontal: 10 }} onPress={() => selectAge(index)}><Text style={{ fontSize: 30, padding: 5 }}>{item}</Text></TouchableOpacity>
+                      )
+                    }
                   }
                 }
-              }
 
-            />
-            <Text style={styles.characterMenuText}>
-              Your character
-            </Text>
-            <TextInput
-              placeholder="Enter your character"
-              value={character}
-              onChangeText={setCharacter}
-              style={styles.textInput}
-              multiline={true}
-              maxLength={100}
-            />
+              />
+              <Text style={styles.characterMenuText}>
+                Your character
+              </Text>
+              <TextInput
+                placeholder="Enter your character"
+                value={character}
+                onChangeText={setCharacter}
+                style={styles.textInput}
+                multiline={true}
+                maxLength={100}
+              />
+            </View>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
-      {/* Loading view */}
-      {creatingStory && (
-        <View style={styles.loadingView}>
-          <LottieView source={require('../../assets/loading.json')} autoPlay loop style={styles.lottie} />
-        </View>
-      )}
+        </TouchableWithoutFeedback>
+        {/* Loading view */}
+        {creatingStory && (
+          <View style={styles.loadingView}>
+            <LottieView source={require('../../assets/loading.json')} autoPlay loop style={styles.lottie} />
+          </View>
+        )}
+      </KeyboardAvoidingView>
       <TouchableOpacity
         style={[styles.createButton, { backgroundColor: age > 0 && character != "" && !creatingStory ? color : 'grey' }]}
         onPress={handleAddNewStory}
@@ -151,16 +156,16 @@ const styles = StyleSheet.create({
   menuContainer: {
     flex: 1,
     width: '100%',
-    marginTop: 40,
+    marginTop: 70,
     alignItems: 'center',
   },
   backButton: {
-    position: 'absolute',
-    top: 50,
+    position: 'relative',
+    top: '5%',
     left: 20,
   },
   menuTitle: {
-    padding: 25,
+    padding: 10,
     fontSize: 35,
     fontWeight: 'bold',
     position: 'relative',

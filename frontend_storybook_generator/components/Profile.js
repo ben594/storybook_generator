@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 50,
+    top: '5%',
     left: 20,
   },
   signOutButton: {

@@ -74,6 +74,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ead8ca',
+    marginBottom: 80,
+    flexGrow: 1,
   },
   logo: {
     alignSelf: 'center',
@@ -81,10 +83,10 @@ const styles = StyleSheet.create({
     fontSize: 25,
   },
   subjectContainer: {
+    flex: 1,
     paddingHorizontal: 10,
-    marginTop: 20,
+    marginTop: 30,
     flexGrow: 1,
-    marginBottom: 80,
   },
   subjectBanner: {
     width: '95%',

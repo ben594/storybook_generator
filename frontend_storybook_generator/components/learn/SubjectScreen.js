@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { TouchableOpacity, TextInput, View, StyleSheet, FlatList, Text, SafeAreaView, Modal, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { TouchableOpacity, TextInput, View, StyleSheet, FlatList, Text, SafeAreaView, Modal, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback } from 'react-native';
 import axios from 'axios';
 
 import BackButton from '../common/BackButton';
@@ -58,37 +58,42 @@ const SubjectScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <BackButton style={styles.backButton} onPress={returnToLearnScreen} />
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.menuContainer}>
-          <Text style={styles.menuTitle}>Choose a topic in {subject} for your story</Text>
-          <View style={styles.topicContainer}>
-            <TextInput
-              placeholder="Enter a topic"
-              value={topic}
-              onChangeText={setTopic}
-              style={styles.textInput}
-              multiline={true}
-              maxLength={100}
-            />
-            <FlatList
-              data={topicData[subject]}
-              numColumns={2}
-              renderItem={({ item }) =>
-                <TouchableOpacity
-                  style={[styles.topicIcon, { backgroundColor: color }]}
-                  onPress={() => { setTopic(item) }}
-                >
-                  <Text style={styles.topicText}>
-                    {item}
-                  </Text>
-                </TouchableOpacity>
-              }
-              keyExtractor={this._keyExtractor}
-            />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
+        <BackButton style={styles.backButton} onPress={returnToLearnScreen} />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.menuContainer}>
+            <Text style={styles.menuTitle}>Choose a topic in {subject} for your story</Text>
+            <View style={styles.topicContainer}>
+              <TextInput
+                placeholder="Enter a topic"
+                value={topic}
+                onChangeText={setTopic}
+                style={styles.textInput}
+                multiline={true}
+                maxLength={100}
+              />
+              <FlatList
+                data={topicData[subject]}
+                numColumns={2}
+                renderItem={({ item }) =>
+                  <TouchableOpacity
+                    style={[styles.topicIcon, { backgroundColor: color }]}
+                    onPress={() => { setTopic(item) }}
+                  >
+                    <Text style={styles.topicText}>
+                      {item}
+                    </Text>
+                  </TouchableOpacity>
+                }
+                keyExtractor={this._keyExtractor}
+              />
+            </View>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
       <TouchableOpacity
         style={[styles.createButton, { backgroundColor: topic != "" ? color : 'grey' }]}
         onPress={continueToEducationSelect}
@@ -106,7 +111,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ead8ca',
-    justifyContent: 'space-between',
   },
   logo: {
     alignSelf: 'center',
@@ -116,10 +120,11 @@ const styles = StyleSheet.create({
   menuContainer: {
     flex: 1,
     width: '100%',
-    marginTop: 40,
+    marginTop: 70,
     alignItems: 'center',
   },
   topicContainer: {
+    flex: 1,
     width: '100%',
     alignItems: 'center',
     marginTop: 10,
@@ -128,7 +133,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 50,
+    top: '5%',
     left: 20,
   },
   topicIcon: {
@@ -146,7 +151,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   menuTitle: {
-    padding: 25,
+    padding: 10,
     fontSize: 35,
     fontWeight: 'bold',
     position: 'relative',
