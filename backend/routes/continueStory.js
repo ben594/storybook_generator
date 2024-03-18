@@ -92,12 +92,16 @@ async function continueChatResponse(pastChatHistory, lenTexts, optionChoice) {
     return {chatHistory, parsedResponse: parseResponse(storyResponse)};
 }
 
-async function getDalleResponse(description) {
+async function getDalleResponse(mainCharacter, year, setting, description) {
+    // const prompt = `
+    // Create a text-free and scenic image using the style of Studio Ghibli of the following story: ${description}
+    // `;
     const prompt = `
-    Create a word-free, scenic, and artistic image using the style of Studio Ghibli of the following story: ${description}
+    the style of a detailed story book graphic, with the main character as ${mainCharacter}, in the year ${year}, with the setting of ${setting} and of the following story
+     ${description}
     `;
     const image = await openai.images.generate({
-        model: 'dall-e-3',
+        model: "dall-e-3",
         prompt: prompt,
         n: 1,
         size: "1024x1024",

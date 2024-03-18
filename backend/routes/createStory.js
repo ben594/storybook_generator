@@ -139,6 +139,7 @@ createStoryRoute.post('/vocab', async (req, res) => {
 
         // return story object
         return res.status(201).json(insertedStory);
+        
     } catch (err) {
         return res.status(500).send(err.stack);
     }
@@ -331,9 +332,13 @@ async function getChatResponseWithVocab(age, mainCharacter, setting, year, userP
     return { chatHistory: [{ role: 'user', content: chatPrompt }, { role: 'assistant', content: storyResponse }], parsedResponse: parseResponse(storyResponse) };
 }
 
-async function getDalleResponse(description) {
+async function getDalleResponse(mainCharacter, year, setting, description) {
+    // const prompt = `
+    // Create a text-free and scenic image using the style of Studio Ghibli of the following story: ${description}
+    // `;
     const prompt = `
-    Create a text-free and scenic image using the style of Studio Ghibli of the following story: ${description}
+    the style of a detailed story book graphic, with the main character as ${mainCharacter}, in the year ${year}, with the setting of ${setting} and of the following story
+     ${description}
     `;
     const image = await openai.images.generate({
         model: "dall-e-3",
