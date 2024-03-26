@@ -10,6 +10,7 @@ import OptionChoices from './OptionChoices';
 import CircularButton from '../common/CircularButton';
 import BookViewerTopBar from './BookViewerTopBar';
 import { REACT_APP_BACKEND_URL } from '../BackendURL';
+import DraggableImage from './DraggableImage';
 
 const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
 
