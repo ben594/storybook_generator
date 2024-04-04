@@ -93,10 +93,11 @@ const BookViewer = ({ route, navigation }) => {
             <TouchableOpacity onPress={handleTapAnywhere} activeOpacity={0.9} key={index}>
               <View key={`${page.pageNumber}`} style={styles.page}>
                 {topBarVisible && <BookViewerTopBar topBarVisible={topBarVisible} navigation={navigation} />}
-                <Image
+                {/* <Image
                   style={styles.imageView}
                   source={{ uri: page.imageURL }}
-                />
+                /> */}
+                <DraggableImage source={page.imageURL}/>
                 <Image style={styles.backgroundImage} source={require('../../assets/edges2.png')} />
 
                 <View style={isLastPage ? styles.lastPageTextContainer : styles.textContainer}>
